@@ -9,7 +9,7 @@ Original file is located at
 
 import numpy as np
 import math
-import obstacle_map
+#import obstacle_map
 import cv2
 from google.colab.patches import cv2_imshow
 
@@ -411,7 +411,10 @@ def move_along(image, node):
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2]+0
   if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
-    return temp
+     temp1= list(np.around([temp[0], temp[1]], decimals=1))
+     temp[0]= temp1[0]
+     temp[1]= temp1[1]
+     return temp
   else:
     return None
 
@@ -422,7 +425,10 @@ def move_UP1(image, node):
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2]+ 30
   if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
-    return temp
+     temp1= list(np.around([temp[0], temp[1]], decimals=1))
+     temp[0]= temp1[0]
+     temp[1]= temp1[1]
+     return temp
   else:
     return None
   
@@ -434,7 +440,10 @@ def move_UP2(image, node):
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2]+ 60
   if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
-    return temp
+     temp1= list(np.around([temp[0], temp[1]], decimals=1))
+     temp[0]= temp1[0]
+     temp[1]= temp1[1]
+     return temp
   else:
     return None
 
@@ -446,7 +455,10 @@ def move_DN1(image, node):
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2] -30
   if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
-    return temp
+     temp1= list(np.around([temp[0], temp[1]], decimals=1))
+     temp[0]= temp1[0]
+     temp[1]= temp1[1]
+     return temp
   else:
     return None
 
@@ -457,7 +469,10 @@ def move_DN2(image, node):
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2] -60
   if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
-    return temp
+     temp1= list(np.around([temp[0], temp[1]], decimals=1))
+     temp[0]= temp1[0]
+     temp[1]= temp1[1]
+     return temp
   else:
     return None
   
@@ -469,51 +484,72 @@ def generate_child(node):
   parent= []
   i=0
   
-  nd = move_along(child[i])
+  nd = move_along(image, child[i])
   x =nd[0]
   y= nd[1]
-  if test_point_obstacle_check(map_, x, y, rad)==False:
-    if nd not in child:
-        child.append(nd)
+  #if test_point_obstacle_check(map_, x, y, rad)==False:
+  if nd not in child:
+    child.append(nd)
         
 
-  nd= move_UP1(child[i])
+  nd= move_UP1(image, child[i])
   x =nd[0]
   y= nd[1]
-  if test_point_obstacle_check(map_, x, y, rad)==False:
-    if nd not in child:
-        child.append(nd)
+  #if test_point_obstacle_check(map_, x, y, rad)==False:
+  if nd not in child:
+    child.append(nd)
         
 
-  nd = move_UP2(child[i])
+  nd = move_UP2(image, child[i])
   x =nd[0]
   y= nd[1]
-  if test_point_obstacle_check(map_, x, y, rad)==False:
-    if nd not in child:
-        child.append(nd)
+  #if test_point_obstacle_check(map_, x, y, rad)==False:
+  if nd not in child:
+    child.append(nd)
         
 
-  nd = move_DN1(child[i])
+  nd = move_DN1(image, child[i])
   x =nd[0]
   y= nd[1]
-  if test_point_obstacle_check(map_, x, y, rad)==False:
-    if nd not in child:
-        child.append(nd)
+  #if test_point_obstacle_check(map_, x, y, rad)==False:
+  if nd not in child:
+    child.append(nd)
 
-  nd = move_DN2(child[i])
+  nd = move_DN2(image, child[i])
   x =nd[0]
   y= nd[1]
-  if test_point_obstacle_check(map_, x, y, rad)==False:
-    if nd not in child:
-        child.append(nd)
+  #if test_point_obstacle_check(map_, x, y, rad)==False:
+  if nd not in child:
+    child.append(nd)
+
+  #parent.append(child[i])
+  return child
+
+def explored_all(node, goal):
+  explored_nodes=[]
+  explored_nodes.append(node)
+
+  while len(explored_nodes)>0:
     
-        
-  parent.append(child[i])
-  return child, parent
+    c1= explored_nodes[0]
+    print(c1)
+    target = check_goal(c1, goal)
+    if target== True:
+      print("goal found!")
+      break;
+    else: 
+      c2= generate_child(c1)
+      explored_nodes.pop(0)
+      for item in c2:
+        explored_nodes.append(item)
 
 
-#map_=load_map()
-# rows, cols = map_.shape[:2]
+    
+def check_goal(c1, goal):
+  if (((c1[0]- goal[0])**2)+ ((c1[1] - goal[1])**2)) <= (1.5)**2:
+    return True
+  else: 
+    return False
 
 
 
@@ -544,11 +580,11 @@ if (start_node_y < 0 and start_node_y > 200) and (goal_node_y < 0 and goal_node_
 
 check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y)
 
-start_node_y= 200-start_node_y
-goal_node_y= 200-goal_node_y
+# start_node_y= 200-start_node_y
+# goal_node_y= 200-goal_node_y
 
 start=[start_node_x, start_node_y, theta_i]
 goal= [goal_node_x, goal_node_y]
 
-child = generate_child(start)
-print(child)
+c = generate_child(start)
+print(c)
