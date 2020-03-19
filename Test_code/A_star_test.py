@@ -320,3 +320,54 @@ def test_point_obstacle_check(clearance, radius_rigid_robot, test_point_coord, i
         return True
     else:
         return False
+
+
+
+
+def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y):
+    if test_point_obstacle_check(clearance, radius_rigid_robot, [start_node_x, start_node_y], None):
+        print("Start node is inside an obstacle. Enter some other coordinates. Restart program!")
+        exit(0)
+
+    if test_point_obstacle_check(clearance, radius_rigid_robot, [goal_node_x, goal_node_y], None):
+        print("Goal node is inside an obstacle. Enter some other coordinates. Restart program!")
+        exit(0)
+
+
+
+# Uncomment to choose different positions:-
+start_node_x = int(input("Enter the starting x coordinate for the rigid robot\n"))
+start_node_y = int(input("Enter the starting y coordinate for the rigid robot\n"))
+print("Enter the initial angle for the robot:  ")
+theta_i = int(input("theta_i is: "))
+
+
+
+goal_node_x = int(input("Enter the goal x coordinate for the rigid robot\n"))
+goal_node_y = int(input("Enter the goal y coordinate for the rigid robot\n"))
+
+radius_rigid_robot = int(input("Enter the radius of the rigid robot \n"))
+clearance = int(input("Enter the desired clearance for the rigid robot\n"))
+
+
+start_node_y = 200 - start_node_y
+goal_node_y = 200 - goal_node_y
+# for testing
+# start_node_x = 5
+# start_node_y = 10
+# goal_node_x = 20
+# goal_node_y = 30
+# clearance = 2
+# radius_rigid_robot = 2
+
+
+if (start_node_x < 0 and start_node_x > 300) and (goal_node_x < 0 and goal_node_x > 300):
+    print("X coordinate is out of range. Enter x from [0,300]. Restart program!")
+    exit(0)
+
+if (start_node_y < 0 and start_node_y > 200) and (goal_node_y < 0 and goal_node_y > 200):
+    print("Y coordinate is out of range. Enter y from [0,200]. Restart program!")
+    exit(0)
+
+check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y)
+
