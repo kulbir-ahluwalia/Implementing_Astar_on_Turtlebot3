@@ -587,4 +587,5 @@ start=[start_node_x, start_node_y, theta_i]
 goal= [goal_node_x, goal_node_y]
 
 c = generate_child(start)
+print("b   ")
 print(c)
