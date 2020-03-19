@@ -308,7 +308,7 @@ def boundary_obstacle(clearance, radius_rigid_robot, test_point_coord):
     else:
         return False
 
-def test_point_obstacle_check(clearance, radius_rigid_robot, test_point_coord, image):
+def test_point_obstacle_check(clearance, radius_rigid_robot, test_point_coord):
     test_point_coord = cart2img(test_point_coord)
     if circular_obstacle(clearance, radius_rigid_robot, test_point_coord):
         return True
@@ -328,11 +328,11 @@ def test_point_obstacle_check(clearance, radius_rigid_robot, test_point_coord, i
         return False
 
 def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y):
-    if test_point_obstacle_check(clearance, radius_rigid_robot, [start_node_x, start_node_y], None):
+    if test_point_obstacle_check(clearance, radius_rigid_robot, [start_node_x, start_node_y]):
         print("Start node is inside an obstacle. Enter some other coordinates. Restart program!")
         exit(0)
 
-    if test_point_obstacle_check(clearance, radius_rigid_robot, [goal_node_x, goal_node_y], None):
+    if test_point_obstacle_check(clearance, radius_rigid_robot, [goal_node_x, goal_node_y]):
         print("Goal node is inside an obstacle. Enter some other coordinates. Restart program!")
         exit(0)
 
@@ -404,13 +404,13 @@ def heu(node1, node2):
   return dist
 
 
-def move_along(image, node):
+def move_along(node):
   temp= [0,0,0]
   angle = math.radians(node[2]+ 0)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2]+0
-  if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
+  if test_point_obstacle_check(clearance,radius_rigid_robot, temp)==False:
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
@@ -418,13 +418,13 @@ def move_along(image, node):
   else:
     return None
 
-def move_UP1(image, node):
+def move_UP1(node):
   temp= [0,0,0]
   angle = math.radians(node[2]+ 30)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2]+ 30
-  if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
+  if test_point_obstacle_check(clearance,radius_rigid_robot, temp)==False:
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
@@ -433,13 +433,13 @@ def move_UP1(image, node):
     return None
   
   
-def move_UP2(image, node):
+def move_UP2(node):
   temp= [0,0,0]
   angle = math.radians(node[2]+ 60)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2]+ 60
-  if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
+  if test_point_obstacle_check(clearance,radius_rigid_robot, temp)==False:
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
@@ -448,13 +448,13 @@ def move_UP2(image, node):
     return None
 
 
-def move_DN1(image, node):
+def move_DN1(node):
   temp= [0,0,0]
   angle = math.radians(node[2]- 30)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2] -30
-  if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
+  if test_point_obstacle_check(clearance,radius_rigid_robot, temp)==False:
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
@@ -462,13 +462,13 @@ def move_DN1(image, node):
   else:
     return None
 
-def move_DN2(image, node):
+def move_DN2(node):
   temp= [0,0,0]
   angle = math.radians(node[2]- 60)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
   temp[2] = node[2] -60
-  if test_point_obstacle_check(clearance,radius_rigid_robot, temp, image)==False:
+  if test_point_obstacle_check(clearance,radius_rigid_robot, temp)==False:
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
@@ -485,40 +485,25 @@ def generate_child(node):
   i=0
   
   nd = move_along(image, child[i])
-  x =nd[0]
-  y= nd[1]
-  #if test_point_obstacle_check(map_, x, y, rad)==False:
   if nd not in child:
     child.append(nd)
         
 
   nd= move_UP1(image, child[i])
-  x =nd[0]
-  y= nd[1]
-  #if test_point_obstacle_check(map_, x, y, rad)==False:
   if nd not in child:
     child.append(nd)
         
 
   nd = move_UP2(image, child[i])
-  x =nd[0]
-  y= nd[1]
-  #if test_point_obstacle_check(map_, x, y, rad)==False:
   if nd not in child:
     child.append(nd)
         
 
   nd = move_DN1(image, child[i])
-  x =nd[0]
-  y= nd[1]
-  #if test_point_obstacle_check(map_, x, y, rad)==False:
   if nd not in child:
     child.append(nd)
 
   nd = move_DN2(image, child[i])
-  x =nd[0]
-  y= nd[1]
-  #if test_point_obstacle_check(map_, x, y, rad)==False:
   if nd not in child:
     child.append(nd)
 
@@ -587,5 +572,4 @@ start=[start_node_x, start_node_y, theta_i]
 goal= [goal_node_x, goal_node_y]
 
 c = generate_child(start)
-print("b   ")
 print(c)
