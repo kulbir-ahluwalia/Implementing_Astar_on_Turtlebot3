@@ -404,8 +404,11 @@ def heu(node1, node2):
   return dist
 
 
-def move_along(node):
+def move_along(node, cost):
   temp= [0,0,0]
+  cost_g = cost + 1
+  cost_h = heu(node, goal)
+  cost_est = cost_g + cost_h
   angle = math.radians(node[2]+ 0)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
@@ -414,12 +417,15 @@ def move_along(node):
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
-     return temp
+     return temp, cost_est
   else:
     return None
 
-def move_UP1(node):
+def move_UP1(node, cost):
   temp= [0,0,0]
+  cost_g = cost + 1.3
+  cost_h = heu(node, goal)
+  cost_est = cost_g + cost_h
   angle = math.radians(node[2]+ 30)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
@@ -428,13 +434,16 @@ def move_UP1(node):
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
-     return temp
+     return temp, cost_est
   else:
     return None
   
   
-def move_UP2(node):
+def move_UP2(node, cost):
   temp= [0,0,0]
+  cost_g = cost + 1.5
+  cost_h = heu(node, goal)
+  cost_est = cost_g + cost_h
   angle = math.radians(node[2]+ 60)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
@@ -443,13 +452,16 @@ def move_UP2(node):
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
-     return temp
+     return temp, cost_est
   else:
     return None
 
 
-def move_DN1(node):
+def move_DN1(node, cost):
   temp= [0,0,0]
+  cost_g = cost + 1.3
+  cost_h = heu(node, goal)
+  cost_est = cost_g + cost_h
   angle = math.radians(node[2]- 30)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
@@ -458,12 +470,15 @@ def move_DN1(node):
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
-     return temp
+     return temp, cost_est
   else:
     return None
 
 def move_DN2(node):
   temp= [0,0,0]
+  cost_g = cost + 1.5
+  cost_h = heu(node, goal)
+  cost_est = cost_g + cost_h
   angle = math.radians(node[2]- 60)
   temp[0] = node[0] + 0.5* math.cos(angle)
   temp[1] = node[1] + 0.5* math.sin(angle)
@@ -472,7 +487,7 @@ def move_DN2(node):
      temp1= list(np.around([temp[0], temp[1]], decimals=1))
      temp[0]= temp1[0]
      temp[1]= temp1[1]
-     return temp
+     return temp, cost_est
   else:
     return None
   
@@ -485,27 +500,39 @@ def generate_child(node):
   i=0
   
   nd = move_along(image, child[i])
-  if nd not in child:
-    child.append(nd)
+  if nd not in child and nd is not None:
+    if visited[int(nd[0]/0.5)][int(nd[1]/0.5)][int(nd[2]/30)]==0:
+      child.append((nd, cost))
+      visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] = 1
+
         
 
   nd= move_UP1(image, child[i])
-  if nd not in child:
-    child.append(nd)
+  if nd not in child and nd is not None:
+      if visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] == 0:
+          child.append((nd, cost))
+          visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] = 1
         
 
   nd = move_UP2(image, child[i])
-  if nd not in child:
-    child.append(nd)
+  if nd not in child and nd is not None:
+      if visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] == 0:
+          child.append(nd)
+          visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] = 1
         
 
   nd = move_DN1(image, child[i])
-  if nd not in child:
-    child.append(nd)
+  if nd not in child and nd is not None:
+      if visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] == 0:
+          child.append(nd)
+          visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] = 1
+
 
   nd = move_DN2(image, child[i])
-  if nd not in child:
-    child.append(nd)
+  if nd not in child and nd is not None:
+      if visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] == 0:
+          child.append(nd)
+          visited[int(nd[0] / 0.5)][int(nd[1] / 0.5)][int(nd[2] / 30)] = 1
 
   #parent.append(child[i])
   return child
@@ -513,6 +540,8 @@ def generate_child(node):
 def explored_all(node, goal):
   explored_nodes=[]
   explored_nodes.append(node)
+  parent = []
+  parent_child = []
 
   while len(explored_nodes)>0:
     
@@ -527,9 +556,15 @@ def explored_all(node, goal):
       explored_nodes.pop(0)
       for item in c2:
         explored_nodes.append(item)
+        all_nodes = [item, c1]
+        parent.append(all_nodes)
+        for v in explored_nodes:
+            image[int(v[1]), int(v[0])] = (0, 0, 255)
+        #   # return image
+
+  return parent, image
 
 
-    
 def check_goal(c1, goal):
   if (((c1[0]- goal[0])**2)+ ((c1[1] - goal[1])**2)) <= (1.5)**2:
     return True
@@ -537,7 +572,7 @@ def check_goal(c1, goal):
     return False
 
 
-
+global visited = np.zeros((600, 400, 12))
 print("Enter the start node co-ordinates")
 start_node_x= int(input("x is: "))
 start_node_y= int(input("y is: "))
@@ -571,5 +606,9 @@ check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y)
 start=[start_node_x, start_node_y, theta_i]
 goal= [goal_node_x, goal_node_y]
 
-c = generate_child(start)
-print(c)
+cost = 0
+# c = generate_child(start)
+# print(c)
+
+parent_child, image1 = explored_all(start, goal)
+print(parent_child)
