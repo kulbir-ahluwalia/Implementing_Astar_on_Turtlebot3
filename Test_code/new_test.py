@@ -405,10 +405,10 @@ def move_along(node):
   print("Point going inside move_along function", point)
   print("Cost going inside move_along function", cost)
   temp= [0,0,0]
-  angle = math.radians(point[2]+ 0)
+  angle = math.radians((point[2]+ 0)%360)
   temp[0] = point[0] + 0.5* math.cos(angle)
   temp[1] = point[1] + 0.5* math.sin(angle)
-  temp[2] = point[2]+0
+  temp[2] = (point[2]+ 0)%360
   cost_g = cost + 1
   cost_h = heu(temp, goal)
   cost_est = cost_g + cost_h
@@ -424,10 +424,10 @@ def move_UP1(node):
   cost = node[1]
   point = node[0]
   temp= [0,0,0]
-  angle = math.radians(point[2]+ 30)
+  angle = math.radians((point[2]+ 30)%360)
   temp[0] = point[0] + 0.5* math.cos(angle)
   temp[1] = point[1] + 0.5* math.sin(angle)
-  temp[2] = point[2]+ 30
+  temp[2] = (point[2]+ 30)%360
   cost_g = cost + 1.3
   cost_h = heu(temp, goal)
   cost_est = cost_g + cost_h
@@ -444,10 +444,10 @@ def move_UP2(node):
   cost= node[1]
   point = node[0]
   temp= [0,0,0]
-  angle = math.radians(point[2]+ 60)
+  angle = math.radians((point[2]+ 60)%360)
   temp[0] = point[0] + 0.5* math.cos(angle)
   temp[1] = point[1] + 0.5* math.sin(angle)
-  temp[2] = point[2]+ 60
+  temp[2] = (point[2]+ 60)%360
   cost_g = cost + 1.5
   cost_h = heu(temp, goal)
   cost_est = cost_g + cost_h
@@ -464,10 +464,10 @@ def move_DN1(node):
   cost = node[1]
   point = node[0]
   temp= [0,0,0]
-  angle = math.radians(point[2]- 30)
+  angle = math.radians((point[2]- 30)%360)
   temp[0] = point[0] + 0.5* math.cos(angle)
   temp[1] = point[1] + 0.5* math.sin(angle)
-  temp[2] = point[2] -30
+  temp[2] = (point[2]- 30)%360
   cost_g = cost + 1.3
   cost_h = heu(temp, goal)
   cost_est = cost_g + cost_h
@@ -483,10 +483,10 @@ def move_DN2(node):
   cost = node[1]
   point = node[0]
   temp= [0,0,0]
-  angle = math.radians(point[2]- 60)
+  angle = math.radians((point[2]- 60)%360)
   temp[0] = point[0] + 0.5* math.cos(angle)
   temp[1] = point[1] + 0.5* math.sin(angle)
-  temp[2] = point[2] -60
+  temp[2] = (point[2]- 60)%360
   cost_g = cost + 1.5
   cost_h = heu(temp, goal)
   cost_est = cost_g + cost_h
@@ -507,41 +507,46 @@ def generate_child(node):
   i=0
   
   nd = move_along( child[i])
-  ndx = nd[0]
-  if nd not in child and ndx is not None:
-    if visited[int(ndx[0]/0.5)][int(ndx[1]/0.5)][int(ndx[2]/30)]==0:
-      child.append(nd)
-      visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] = 1
+  if nd is not None:
+    ndx = nd[0]
+    if nd not in child:
+      if visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)]==0:
+        child.append(nd)
+        visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] = 1
 
-        
+
 
   nd = move_UP1(child[i])
-  ndx = nd[0]
-  if nd not in child and ndx is not None:
+  if nd is not None:
+    ndx = nd[0]
+    if nd not in child:
       if visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] == 0:
           child.append(nd)
           visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] = 1
         
 
   nd = move_UP2(child[i])
-  ndx = nd[0]
-  if nd not in child and ndx is not None:
+  if nd is not None:
+    ndx = nd[0]
+    if nd not in child:
       if visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] == 0:
           child.append(nd)
           visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] = 1
         
 
   nd = move_DN1(child[i])
-  ndx = nd[0]
-  if nd not in child and ndx is not None:
+  if nd is not None:
+    ndx = nd[0]
+    if nd not in child:
       if visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] == 0:
           child.append(nd)
           visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] = 1
 
 
   nd = move_DN2(child[i])
-  ndx = nd[0]
-  if nd not in child and ndx is not None:
+  if nd is not None:
+    ndx = nd[0]
+    if nd not in child:
       if visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] == 0:
           child.append(nd)
           visited[int(ndx[0] / 0.5)][int(ndx[1] / 0.5)][int(ndx[2] / 30)] = 1
