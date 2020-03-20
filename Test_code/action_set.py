@@ -484,26 +484,26 @@ def generate_child(node):
   parent= []
   i=0
   
-  nd = move_along(image, child[i])
+  nd = move_along(child[i])
   if nd not in child:
     child.append(nd)
         
 
-  nd= move_UP1(image, child[i])
+  nd= move_UP1(child[i])
   if nd not in child:
     child.append(nd)
         
 
-  nd = move_UP2(image, child[i])
+  nd = move_UP2(child[i])
   if nd not in child:
     child.append(nd)
         
 
-  nd = move_DN1(image, child[i])
+  nd = move_DN1(child[i])
   if nd not in child:
     child.append(nd)
 
-  nd = move_DN2(image, child[i])
+  nd = move_DN2(child[i])
   if nd not in child:
     child.append(nd)
 
