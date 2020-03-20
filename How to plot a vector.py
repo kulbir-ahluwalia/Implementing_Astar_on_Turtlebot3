@@ -59,7 +59,7 @@ print(Node3)
 
 
 plt.grid()
-
+#
 ax.set_aspect('equal')
 
 plt.xlim(-10,10)
