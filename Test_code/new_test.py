@@ -406,8 +406,8 @@ def move_along(node):
   print("Cost going inside move_along function", cost)
   temp= [0,0,0]
   angle = math.radians((point[2]+ 0)%360)
-  temp[0] = point[0] + 0.5* math.cos(angle)
-  temp[1] = point[1] + 0.5* math.sin(angle)
+  temp[0] = point[0] + step_size_robot* math.cos(angle)
+  temp[1] = point[1] + step_size_robot* math.sin(angle)
   temp[2] = (point[2]+ 0)%360
   cost_g = cost + 1
   cost_h = heu(temp, goal)
@@ -425,8 +425,8 @@ def move_UP1(node):
   point = node[0]
   temp= [0,0,0]
   angle = math.radians((point[2]+ 30)%360)
-  temp[0] = point[0] + 0.5* math.cos(angle)
-  temp[1] = point[1] + 0.5* math.sin(angle)
+  temp[0] = point[0] + step_size_robot* math.cos(angle)
+  temp[1] = point[1] + step_size_robot* math.sin(angle)
   temp[2] = (point[2]+ 30)%360
   cost_g = cost + 1.3
   cost_h = heu(temp, goal)
@@ -445,8 +445,8 @@ def move_UP2(node):
   point = node[0]
   temp= [0,0,0]
   angle = math.radians((point[2]+ 60)%360)
-  temp[0] = point[0] + 0.5* math.cos(angle)
-  temp[1] = point[1] + 0.5* math.sin(angle)
+  temp[0] = point[0] + step_size_robot* math.cos(angle)
+  temp[1] = point[1] + step_size_robot* math.sin(angle)
   temp[2] = (point[2]+ 60)%360
   cost_g = cost + 1.5
   cost_h = heu(temp, goal)
@@ -465,8 +465,8 @@ def move_DN1(node):
   point = node[0]
   temp= [0,0,0]
   angle = math.radians((point[2]- 30)%360)
-  temp[0] = point[0] + 0.5* math.cos(angle)
-  temp[1] = point[1] + 0.5* math.sin(angle)
+  temp[0] = point[0] + step_size_robot* math.cos(angle)
+  temp[1] = point[1] + step_size_robot* math.sin(angle)
   temp[2] = (point[2]- 30)%360
   cost_g = cost + 1.3
   cost_h = heu(temp, goal)
@@ -484,8 +484,8 @@ def move_DN2(node):
   point = node[0]
   temp= [0,0,0]
   angle = math.radians((point[2]- 60)%360)
-  temp[0] = point[0] + 0.5* math.cos(angle)
-  temp[1] = point[1] + 0.5* math.sin(angle)
+  temp[0] = point[0] + step_size_robot* math.cos(angle)
+  temp[1] = point[1] + step_size_robot* math.sin(angle)
   temp[2] = (point[2]- 60)%360
   cost_g = cost + 1.5
   cost_h = heu(temp, goal)
@@ -605,6 +605,11 @@ start_node_y= int(input("y is: "))
 print("Enter the goal node co-ordinates")
 goal_node_x= int(input("x is: "))
 goal_node_y= int(input("y is: "))
+
+step_size_robot = int(input("Enter the step size of movement of the robot: "))
+if (step_size_robot < 1 and step_size_robot > 10):
+    print("Step_size_robot is out of range. Enter step_size_robot from [0,10]. Restart program!")
+    exit(0)
 
 print("Enter the initial angle for the robot:  ")
 theta_i = int(input("theta_i is: "))

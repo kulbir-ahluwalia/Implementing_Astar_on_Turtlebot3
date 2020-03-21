@@ -28,7 +28,7 @@ def circular_obstacle(clearance, radius_rigid_robot, test_point_coord):
     augment_distance = radius_rigid_robot + clearance
 
     distance_from_center = ((test_point_coord_x - circle_center[0]) ** 2 + (
-                test_point_coord_y - circle_center[1]) ** 2) ** 0.5
+            test_point_coord_y - circle_center[1]) ** 2) ** 0.5
 
     if distance_from_center > (25 + augment_distance):
         return False
@@ -46,8 +46,8 @@ def ellipsoid_obstacle(clearance, radius_rigid_robot, test_point_coord):
     semi_minor_axis = 20
 
     distance_from_center = ((test_point_coord_x - ellipsoid_center[0]) ** 2) / (
-                (semi_major_axis + augment_distance) ** 2) + (test_point_coord_y - ellipsoid_center[1]) ** 2 / (
-                                       (semi_minor_axis + augment_distance) ** 2)
+            (semi_major_axis + augment_distance) ** 2) + (test_point_coord_y - ellipsoid_center[1]) ** 2 / (
+                                   (semi_minor_axis + augment_distance) ** 2)
 
     if distance_from_center > 1:
         return False
@@ -68,7 +68,7 @@ def rectangle_obstacle(clearance, radius_rigid_robot, test_point_coord):
     # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the rectangle
     edge1_m_c = find_line_slope_and_intercept(test_point_coord, rectangle_point_1, rectangle_point_2)
     line1 = test_point_coord[1] - (edge1_m_c[0] * test_point_coord[0]) - (
-                edge1_m_c[1] + (augment_distance * 2 / (3 ** 0.5)))
+            edge1_m_c[1] + (augment_distance * 2 / (3 ** 0.5)))
     # print(line1)
     if line1 >= 0:
         flag1 = False
@@ -89,7 +89,7 @@ def rectangle_obstacle(clearance, radius_rigid_robot, test_point_coord):
 
     edge3_m_c = find_line_slope_and_intercept(test_point_coord, rectangle_point_3, rectangle_point_4)
     line3 = test_point_coord[1] - (edge3_m_c[0] * test_point_coord[0]) - (
-                edge3_m_c[1] - (augment_distance * 2 / (3 ** 0.5)))
+            edge3_m_c[1] - (augment_distance * 2 / (3 ** 0.5)))
     # print(line3)
     if line3 >= 0:
         flag3 = True
@@ -311,6 +311,11 @@ class GraphNode:
         self.parent = None
 
 
+def heu(node1, node2):
+  dist= math.sqrt( (node1[0] - node2[0])**2 + (node1[1] - node2[1])**2)
+  return dist
+
+
 def test_point_obstacle_check(clearance, radius_rigid_robot, test_point_coord, image):
     test_point_coord = cart2img(test_point_coord)
     if circular_obstacle(clearance, radius_rigid_robot, test_point_coord):
@@ -441,28 +446,39 @@ def get_minimum_element(queue):
 
 
 def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_rigid_robot):
+    # class GraphNode:
+    #     def __init__(self, point):            #initialise attributes position, cost and parent
+    #         self.position = point
+    #         self.cost = math.inf    #initialise initial cost as infinity for every node
+    #         self.parent = None      #initialise initial parent as None for every node
     start_node = GraphNode(start_node_pos)
-    start_node.cost = 0
+    start_node.cost = 0  # initialise cost of start node = 0
 
-    visited = list()
-    queue = [start_node]
+    visited = list()  # list of all visited nodes
+    queue = [start_node]  # queue is a list taht contains yet to be explored node "objects"
+    # print(queue)
 
-    actions = ["U", "D", "L", "R", "UR", "DR", "UL", "DL"]
-    visited_set = set()
-    visited_list = []
+    actions = ["U", "D", "L", "R", "UR", "DR", "UL", "DL"]  # define a list with all the possible actions
+    visited_set = set()  # a set is used to remove the duplicate node values
+    visited_list = []  # a set is used to visualize the order of nodes visited and to maintain order
     cost_updates_matrix = np.zeros((200, 300), dtype=object)
+    # print(cost_updates_matrix)
 
-    cost_updates_matrix[:, :] = math.inf
-    goal_reached = False
-    parent_child_map = {}
-    parent_child_map[tuple(start_node_pos)] = None
+    cost_updates_matrix[:, :] = math.inf  # initialise cost update matrix with infinite costs for every node
+    goal_reached = False  # set the goal_reached flag to zero initially
+    parent_child_map = {}  # define a dictionary to store parent and child relations
+    # key in a dict can't be a list, only immutable things can be used as keys, so use tuples as keys
+    parent_child_map[tuple(start_node_pos)] = None  # for start node, there is no parent
+    # print(parent_child_map)
 
-    start = process_time()
-    while len(queue) > 0:
-        current_node = get_minimum_element(queue)
-        current_point = current_node.position
-        visited.append(str(current_point))
-        visited_set.add(str(current_point))
+    start = process_time()  # start the time counter for calculating run time for the Dijkstra's algorithm
+    while len(queue) > 0:  # as long as there are nodes yet to be checked in the queue, while loop keeps running
+        current_node = get_minimum_element(queue)  # choose the node object with minimum cost
+        current_point = current_node.position  # store the position from the (minimum cost) current_node in "current_point"
+        visited.append(
+            str(current_point))  # convert the current_point to an immutable string and store it in the list "visited"
+
+        visited_set.add(str(current_point))  # you can only put immutable objects in a set, string is also immutable
         visited_list.append(current_point)
 
         if current_point == goal_node_pos:
@@ -470,23 +486,40 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
             print("Cost = ", current_node.cost)
             break
 
+        # to generate, explore and append possible next positions, make a list of all the generated child nodes
         child_nodes = []
+        # actions = ["U", "D", "L", "R", "UR", "DR", "UL", "DL"],     action = iterable element
         for action in actions:
+            # get_new_node is run for every action , U, D, L, R, UR, DR, UL, DL
             new_point, base_cost = get_new_node(image, action, clearance, radius_rigid_robot, current_point)
-            if new_point is not None:
-                child_nodes.append((new_point, base_cost))
+            if new_point is not None:  # present in the explorable area and not in obstacle
+                child_nodes.append((new_point, base_cost))  # append the new node in child nodes along with cost
 
-        for child in child_nodes:
+        # print(child_nodes[0])        #first element of the list = ([x,y],cost)
+        # print(child_nodes[0][0])     #first element of first element of the list = [x,y]
+        # print(child_nodes[0][0][1])  #second element of first element of first element of the list = y
+
+        for child in child_nodes:  # child = iterable element in child_nodes = of the format ([x,y],cost)
             if str(child[0]) not in visited_set:
-                prev_cost = cost_updates_matrix[child[0][1], child[0][0]]
-                new_cost = child[1] + current_node.cost
+                child_position = child[0]  # child[0] = [x,y]
+                child_position_x = child[0][0]  # child[0][0] = x
+                child_position_y = child[0][1]  # child[0][1] = y
+
+                prev_cost = cost_updates_matrix[child[0][1], child[0][0]]  # row,column
+                # prev_cost = cost_updates_matrix[y, x]  # row,column
+
+                # add the cost of the child to the current node's cost to get new cost
+                new_cost = child[1] + current_node.cost  # child[1] = cost
+
                 if new_cost < prev_cost:
                     cost_updates_matrix[child[0][1], child[0][0]] = new_cost
                     child_node = GraphNode(child[0])
                     child_node.cost = new_cost
                     child_node.parent = current_node
-                    queue.append(child_node)
-                    parent_child_map[tuple(child[0])] = tuple(current_point)
+                    queue.append(child_node)  # child_node is yet to be explored
+                    parent_child_map[tuple(child[0])] = tuple(
+                        current_point)  # key, always immutable, here, tuple = tuple(child[0])
+                    #   #value, can be anything = current_point
 
     end = process_time()
     print("Time to completion:", (end - start))
@@ -623,7 +656,7 @@ def main():
     cv2.destroyAllWindows()
 
     plt.imshow(image)
-    print(image)
+    # print(image)
     plt.show()
 
 
