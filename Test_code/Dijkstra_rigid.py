@@ -461,7 +461,7 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
 
     actions = ["U", "D", "L", "R", "UR", "DR", "UL", "DL"]  # define a list with all the possible actions
     visited_set = set()  # a set is used to remove the duplicate node values
-    visited_list = []  # a set is used to visualize the order of nodes visited and to maintain order
+    visited_list = []  # a list is used to visualize the order of nodes visited and to maintain order
     cost_updates_matrix = np.zeros((200, 300), dtype=object)
     # print(cost_updates_matrix)
 
@@ -494,6 +494,8 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
             # get_new_node is run for every action , U, D, L, R, UR, DR, UL, DL
             new_point, base_cost = get_new_node(image, action, clearance, radius_rigid_robot, current_point)
             if new_point is not None:  # present in the explorable area and not in obstacle
+                #visited check
+                #
                 child_nodes.append((new_point, base_cost))  # append the new node in child nodes along with cost
 
         # print(child_nodes[0])        #first element of the list = ([x,y],cost)
@@ -510,9 +512,11 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
                 # prev_cost = cost_updates_matrix[y, x]  # row,column
 
                 # add the cost of the child to the current node's cost to get new cost
+                #???????????????????????????????????????????????????????????????????????????????????????
                 new_cost = child[1] + current_node.cost  # child[1] = cost
                 total_cost = new_cost + heu(child[0], goal_node_pos)
 
+                ??????????????????????????????????????????????????????????????????????????????????????????
                 if new_cost < prev_cost:
                     cost_updates_matrix[child[0][1], child[0][0]] = new_cost
                     child_node = GraphNode(child[0])
@@ -520,9 +524,9 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
                     child_node.parent = current_node
                     child_node.total_cost = total_cost
                     queue.append(child_node)  # child_node is yet to be explored
-                    parent_child_map[tuple(child[0])] = tuple(
-                        current_point)  # key, always immutable, here, tuple = tuple(child[0])
+                    parent_child_map[tuple(child[0])] = tuple(current_point)  # key, always immutable, here, tuple = tuple(child[0])
                     #   #value, can be anything = current_point
+                    # FORMAT: CHILD position: PARENT position
 
     end = process_time()
     print("Time to completion:", (end - start))
