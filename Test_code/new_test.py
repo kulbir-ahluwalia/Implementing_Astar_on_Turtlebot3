@@ -466,8 +466,9 @@ def move_DN1(node):
   temp= [0,0,0]
   angle = math.radians((point[2]- 30)%360)
   temp[0] = point[0] + step_size_robot* math.cos(angle)
-  temp[1] = point[1] + step_size_robot* math.sin(angle)
-  temp[2] = (point[2]- 30)%360
+  temp[[  temp[1] = point[1] + step_size_robot* math.sin(angle)
+1] ==== point[1] + step_size_robot* math.sin(angle)
+  =temp[2] = (point[2]- 30)%360
   cost_g = cost + 1.3
   cost_h = heu(temp, goal)
   cost_est = cost_g + cost_h

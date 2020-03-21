@@ -42,9 +42,10 @@ print(Node2)
 
 
 
-X3 = np.array((2))
-Y3= np.array((-2))
-U3 = np.array((1))
+X3 = np.array((5))
+Y3= np.array((-2.5))
+
+U3 = np.array((2))
 V3 = np.array((-3.5))
 
 q3 = ax.quiver(X3, Y3, U3, V3,units='xy' ,scale=1)

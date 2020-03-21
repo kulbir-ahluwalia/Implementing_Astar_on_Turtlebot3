@@ -308,6 +308,7 @@ class GraphNode:
     def __init__(self, point):
         self.position = point
         self.cost = math.inf
+        self.total_cost = 0
         self.parent = None
 
 
@@ -440,7 +441,7 @@ def get_new_node(image, action, clearance, radius_rigid_robot, test_point_coord)
 def get_minimum_element(queue):
     min_index = 0
     for index in range(len(queue)):
-        if queue[index].cost < queue[min_index].cost:
+        if queue[index].total_cost < queue[min_index].total_cost:
             min_index = index
     return queue.pop(min_index)
 
@@ -455,7 +456,7 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
     start_node.cost = 0  # initialise cost of start node = 0
 
     visited = list()  # list of all visited nodes
-    queue = [start_node]  # queue is a list taht contains yet to be explored node "objects"
+    queue = [start_node]  # queue is a list that contains yet to be explored node "objects"
     # print(queue)
 
     actions = ["U", "D", "L", "R", "UR", "DR", "UL", "DL"]  # define a list with all the possible actions
@@ -510,12 +511,14 @@ def find_path_dijkstra(image, start_node_pos, goal_node_pos, clearance, radius_r
 
                 # add the cost of the child to the current node's cost to get new cost
                 new_cost = child[1] + current_node.cost  # child[1] = cost
+                total_cost = new_cost + heu(child[0], goal_node_pos)
 
                 if new_cost < prev_cost:
                     cost_updates_matrix[child[0][1], child[0][0]] = new_cost
                     child_node = GraphNode(child[0])
                     child_node.cost = new_cost
                     child_node.parent = current_node
+                    child_node.total_cost = total_cost
                     queue.append(child_node)  # child_node is yet to be explored
                     parent_child_map[tuple(child[0])] = tuple(
                         current_point)  # key, always immutable, here, tuple = tuple(child[0])
