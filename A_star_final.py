@@ -1,5 +1,5 @@
 # ENPM 661 - Planning for Autonomous Robots
-# Project 3 - Implementing A* Algorithm for Rigid Robot
+# Project 3 - Implementing A star search Algorithm for Rigid Robot
 # Team - Nidhi Bhojak           , UID - 116787529
 #        Kulbir Singh Ahluwalia , UID - 116836050
 
@@ -178,7 +178,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     parent_child_map[tuple([start_node_pos[0], start_node_pos[1], initial_angle])] = None  # for start node, there is no parent
     # print(parent_child_map)
 
-    start = process_time()  # start the time counter for calculating run time for the A* algorithm
+    start = process_time()  # start the time counter for calculating run time for the A* search algorithm
     last_node = None
     while len(queue) > 0:  # as long as there are nodes yet to be checked in the queue, while loop keeps running
         current_node = get_minimum_element(queue)  # choose the node object with minimum cost
