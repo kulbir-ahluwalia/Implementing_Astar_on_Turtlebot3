@@ -27,4 +27,11 @@ Open the video "output.mp4"<br>
 7. Next program will ask for goal point, follow the same methodology mentioned for start point
 If the points provided are in the obstacle space or out of bounds, program will terminate.<br>
 
+## Organisation of code
+The code is split into 3 python programs which are:-
+1. **A_star_final.py** is the main python file.
+2. **intersection_check.py** checks for intersections of vectors with obstacles.
+3. **obstacle_check.py** checks whether a point is within an obstacle or not.
  
+## Output
+The simulation video is output as **output.mp4** and the frames are available in the "plots" folder.
