@@ -40,6 +40,8 @@ The code is split into 3 python programs which are:-
 1. **A_star_final.py** is the main python file.
 2. **intersection_check.py** checks for intersections of vectors with obstacles.
 3. **obstacle_check.py** checks whether a point is within an obstacle or not.
+We have commented the sympy implementation to find the intersection of each vector with the obstacle space due to its time consuming execution. 
+Now we have looked for whether the node is lying in the obstacle space or not as the step size is relatively small as compared to the obstacles.
  
 ## Output
 The simulation video is output as **output.mp4** and the frames are available in the "plots" folder.
