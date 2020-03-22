@@ -12,7 +12,7 @@ import math
 import matplotlib.pyplot as plt
 import cv2
 from time import process_time
-from google.colab.patches import cv2_imshow
+#from google.colab.patches import cv2_imshow
 
 visited = np.zeros((600,400,12))
 
