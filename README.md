@@ -27,7 +27,7 @@ A* algorithm is an informed search based on which the path planning algorithm fo
 -Radius and clearance : 1 unit each
 -Step Size: 1 unit
 Open the video "output.mp4"<br>
-3. To run the code, navigate to the "Implementing_Astar_on_Turtlebot3" folder. From the terminal, run the command `python3 A_star_final.py` <br>
+3. To run the code, navigate to the "codes/Implementing_Astar_on_Turtlebot3" folder. From the terminal, run the command `python3 A_star_final.py` <br>
 4. The program will ask for the radius from the obstacles and then the clearance of the robot, provide input in both cases in 'int' format. For eg: 2<br>
 5. Next program will ask for start point coordinates x, y and theta. Give input x-->press "Enter",Give input y-->press "Enter", Give input theta-->press "Enter" . <br>
 6. You will then be asked the step size for each movement, provide input in integer, For eg: 3 <br>
@@ -43,3 +43,4 @@ The code is split into 3 python programs which are:-
  
 ## Output
 The simulation video is output as **output.mp4** and the frames are available in the "plots" folder.
+The final image is "plots.png" in the plots folder.
