@@ -282,20 +282,16 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
         else:
             return True
 
+print(circular_intersection_check(1,1,[197,150],[253,150]))
 
-# ellipse_intersection_check(1,1,[200,150],[250,150])
-# rectangle_intersection(1,1,[200,150],[250,150])
+print(ellipse_intersection_check(1,1,[200,150],[250,150]))
 
-circular_intersection_check(1,1,[197,150],[253,150])
-
-
-print(polygon_right_intersection(1,1,[200,150],[250,150]))
-
+print(rectangle_intersection(1,1,[200,150],[250,150]))
 
 
 print(rhombus_intersection(1,1,[190,24],[255,26]))   #False case, horizontal vector cuts the rhombus
 print(rhombus_intersection(1,1,[225,5],[225,50]))   #False case, vertical vector cuts the rhombus
 
 print(polygon_right_intersection(1,1,[200,150],[250,150]))
-
+print(polygon_left_intersection(1,1,[200,150],[250,150]))
 
