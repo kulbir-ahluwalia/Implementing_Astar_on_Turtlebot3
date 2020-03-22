@@ -4,9 +4,10 @@
 #        Kulbir Singh Ahluwalia , UID - 116836050
 
 # import intersection_check as ic
+
 from intersection_check import *
 from obstacle_check import *
-
+from matplotlib.patches import *
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -41,6 +42,7 @@ def move_along(image, clearance, radius_rigid_robot, test_point_coord, test_poin
         return new_point, action_cost
     else:
         return None, None
+    # return new_point, action_cost
 
 
 def move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
@@ -58,7 +60,7 @@ def move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return new_point, action_cost
     else:
         return None, None
-
+    # return new_point, action_cost
 
 def move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     angle = math.radians(test_point_angle + 60)
@@ -71,6 +73,7 @@ def move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return new_point, action_cost
     else:
         return None, None
+    # return new_point, action_cost
 
 
 def move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
@@ -84,6 +87,7 @@ def move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return new_point, action_cost
     else:
         return None, None
+    # return new_point, action_cost
 
 
 def move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
@@ -97,6 +101,8 @@ def move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return new_point, action_cost
     else:
         return None, None
+
+    # return new_point, action_cost
 
 
 def get_new_node(image, action, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
@@ -274,15 +280,15 @@ def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_nod
 start_node_x = 5
 start_node_y = 5
 
-goal_node_x = 45
-goal_node_y = 45
+goal_node_x = 5
+goal_node_y = 5
 
-step_size_robot = 5
+step_size_robot = 1
 initial_angle = 0
 
-clearance = 0
+clearance = 5
 radius_rigid_robot = 0
-
+augment_distance = radius_rigid_robot + clearance
 
 if (start_node_x < 0 and start_node_x > 300) and (goal_node_x < 0 and goal_node_x > 300):
     print("X coordinate is out of range. Enter x from [0,300]. Restart program!")
@@ -364,14 +370,66 @@ def main():
 
 
 
+
+
     # plot the path:
     fig, ax = plt.subplots()
     plt.grid()
     #
     ax.set_aspect('equal')
 
-    plt.xlim(0, 60)
-    plt.ylim(0, 60)
+    circle = plt.Circle((225,150), radius=25+augment_distance)
+    ax.add_patch(circle)
+
+    points = [[225, 40+(augment_distance/0.8575)], [250+(augment_distance/0.5145), 25], [225, 10-(augment_distance/0.8575)], [200-(augment_distance/0.5145), 25]]
+    polygon = plt.Polygon(points)
+    ax.add_patch(polygon)
+
+    rectangle_points = rectangle_points_find(clearance, radius_rigid_robot, None, None)
+    #print([rectangle_points[0][x],rectangle_points[0][y]])
+
+    points = [[rectangle_points[0][x],rectangle_points[0][y]], [rectangle_points[1][x],rectangle_points[1][y]], [rectangle_points[2][x],rectangle_points[2][y]],
+              [rectangle_points[3][x], rectangle_points[3][y]]]
+    polygon = plt.Polygon(points)
+    ax.add_patch(polygon)
+
+
+
+
+    polygon_points = polygon_right_points(clearance, radius_rigid_robot, None, None)
+    # print([rectangle_points[0][x],rectangle_points[0][y]])
+
+    points = [[polygon_points[0][x], polygon_points[0][y]], [polygon_points[1][x], polygon_points[1][y]],
+              [polygon_points[2][x], polygon_points[2][y]],
+              [polygon_points[3][x], polygon_points[3][y]],
+              [polygon_points[4][x], polygon_points[4][y]]]
+    polygon = plt.Polygon(points)
+    ax.add_patch(polygon)
+
+    polygon_points_left = polygon_left_points(clearance, radius_rigid_robot, None, None)
+    # print([rectangle_points[0][x],rectangle_points[0][y]])
+
+    points = [[polygon_points_left[0][x], polygon_points_left[0][y]], [polygon_points_left[1][x], polygon_points_left[1][y]],
+              [polygon_points_left[2][x], polygon_points_left[2][y]],
+              [polygon_points_left[3][x], polygon_points_left[3][y]]]
+    polygon = plt.Polygon(points)
+    ax.add_patch(polygon)
+
+
+
+
+
+    ellipse = Ellipse(xy=(150, 100), width=80+(2*augment_distance), height=40+(2*augment_distance))
+    ax.add_patch(ellipse)
+
+
+
+
+
+
+
+    plt.xlim(0, 300)
+    plt.ylim(0, 200)
 
     for v in visited_list:
 
