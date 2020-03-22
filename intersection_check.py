@@ -50,6 +50,7 @@ def circular_intersection_check(clearance, radius_rigid_robot, parent_coord, chi
         else:
             not_intersecting = True
 
+    print('c',not_intersecting)
     return not_intersecting
 
 
@@ -92,6 +93,7 @@ def ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, chil
         else:
             not_intersecting = True
 
+    print('e', not_intersecting)
     return not_intersecting
 
 
@@ -136,7 +138,7 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
 
     not_intersecting = True
     for root in solution:
-        # print(root)
+        #print(root)
         x_max = max(parent_coord[0], child_coord[0])
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
@@ -152,6 +154,7 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
         else:
             not_intersecting = True
 
+    print('r', not_intersecting)
     return not_intersecting
 
 
@@ -212,6 +215,7 @@ def rhombus_intersection(clearance, radius_rigid_robot, parent_coord, child_coor
         else:
             not_intersecting = True
 
+    print('rh', not_intersecting)
     return not_intersecting
 
 
@@ -242,8 +246,8 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
     edge4_m_c = find_line_slope_and_intercept(None, nonconvex_point_4, nonconvex_point_5)
     line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance / 0.64018))
 
-    edge5_m_c = find_line_slope_and_intercept(None, nonconvex_point_5, nonconvex_point_1)
-    line5 = y - (edge5_m_c[0] * x) - (edge5_m_c[1] - (augment_distance / 0.640184))
+    # edge5_m_c = find_line_slope_and_intercept(None, nonconvex_point_5, nonconvex_point_1)
+    # line5 = y - (edge5_m_c[0] * x) - (edge5_m_c[1] - (augment_distance / 0.640184))
 
     solution11 = solve([line1, line_equation], (x, y))
     # print("Intersection points with first line: ", solution11)
@@ -253,10 +257,11 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
     # print("Intersection points with third line: ", solution13)
     solution14 = solve([line4, line_equation], (x, y))
     # print("Intersection points with Fourth line: ", solution14)
-    solution15 = solve([line5, line_equation], (x, y))
-    # print("Intersection points with Fourth line: ", solution15)
+    # solution15 = solve([line5, line_equation], (x, y))
+    # # print("Intersection points with Fourth line: ", solution15)
 
-    solution = [solution11, solution12, solution13, solution14, solution15]
+    # solution = [solution11, solution12, solution13, solution14, solution15]
+    solution = [solution11, solution12, solution13, solution14]
 
     not_intersecting = True
     for root in solution:
@@ -264,7 +269,7 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
-        print('root', root, len(root))
+        #print('root', root, len(root))
 
         if len(root) == 0 or math.isnan(root[x]) or math.isnan(root[y]):
             return True
@@ -275,7 +280,7 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
             break  # intersection present, not valid vector
         else:
             not_intersecting = True
-
+    print('pl', not_intersecting)
     return not_intersecting
 
 
@@ -300,8 +305,8 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
     edge3_m_c = find_line_slope_and_intercept(None, nonconvex_point_3, nonconvex_point_4)
     line3 = y - (edge3_m_c[0] * x) - (edge3_m_c[1] + (augment_distance / 0.0767))
 
-    edge4_m_c = find_line_slope_and_intercept(None, nonconvex_point_4, nonconvex_point_1)
-    line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance / 0.7071))
+    # edge4_m_c = find_line_slope_and_intercept(None, nonconvex_point_4, nonconvex_point_1)
+    # line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance / 0.7071))
 
     solution16 = solve([line1, line_equation], (x, y))
     # print("Intersection points with first line: ", solution16)
@@ -309,10 +314,11 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
     # print("Intersection points with second line: ", solution17)
     solution18 = solve([line3, line_equation], (x, y))
     # print("Intersection points with third line: ", solution18)
-    solution19 = solve([line4, line_equation], (x, y))
-    # print("Intersection points with Fourth line: ", solution19)
+    # solution19 = solve([line4, line_equation], (x, y))
+    # # print("Intersection points with Fourth line: ", solution19)
 
-    solution = [solution16, solution17, solution18, solution19]
+    # solution = [solution16, solution17, solution18, solution19]
+    solution = [solution16, solution17, solution18]
 
     not_intersecting = True
     for root in solution:
@@ -330,11 +336,11 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
             break  # intersection present, not valid vector
         else:
             not_intersecting = True
-
+    print('l', not_intersecting)
     return not_intersecting
 
 
-print(circular_intersection_check(0, 0, [6.0, 11.732050807568877], [5, 10]))  # should give False
+# print(circular_intersection_check(0, 0, [6.0, 11.732050807568877], [5, 10]))  # should give False
 #
 # print(ellipse_intersection_check(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
 #
@@ -366,20 +372,20 @@ def boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord):
 
 def intersection_check_of_vectors(clearance, radius_rigid_robot, parent_coord, child_coord):
 
-    if not(circular_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
+    if not(ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
         return True
-    elif not(ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
-        return True
-    elif not(rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
-        return True
-    elif not(rhombus_intersection(clearance, radius_rigid_robot,parent_coord, child_coord)):
-        return True
-    elif not(polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
-        return True
-    elif not(polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
-        return True
-    elif (boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord)):
-        return True
+    # elif not(circular_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
+    #     return True
+    # elif not(rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+    #     return True
+    # elif not(rhombus_intersection(clearance, radius_rigid_robot,parent_coord, child_coord)):
+    #     return True
+    # elif not(polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+    #     return True
+    # elif not(polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+    #     return True
+    # elif (boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord)):
+    #     return True
     else:
         return False
 
