@@ -132,6 +132,7 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
     # print("Intersection points with Fourth line: ", solution6)
 
     solution = [solution3, solution4, solution5, solution6]
+    rectangle_points = [solution3, solution4, solution5, solution6]
 
     not_intersecting = True
     for root in solution:
@@ -394,3 +395,128 @@ def intersection_check_of_vectors(clearance, radius_rigid_robot, parent_coord, c
 #
 # print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
 # print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
+
+
+
+
+######################################################
+# PLOTTING
+######################################################
+
+
+def rectangle_points_find(clearance, radius_rigid_robot, parent_coord, child_coord):
+    augment_distance = radius_rigid_robot + clearance
+
+    rectangle_point_1 = [100, 38.66025]
+    rectangle_point_2 = [35.0481, 76.1603]
+    rectangle_point_3 = [30.0481, 67.5]
+    rectangle_point_4 = [95, 30]
+
+    # We set the flags by testing for image point inside the rectangle
+    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the rectangle
+    edge1_m_c = find_line_slope_and_intercept(None, rectangle_point_1, rectangle_point_2)
+    line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] + (augment_distance * 2 / (3 ** 0.5)))
+
+    edge2_m_c = find_line_slope_and_intercept(None, rectangle_point_2, rectangle_point_3)
+    line2 = y - (edge2_m_c[0] * x) - (edge2_m_c[1] + (augment_distance * 2))
+
+    edge3_m_c = find_line_slope_and_intercept(None, rectangle_point_3, rectangle_point_4)
+    line3 = y - (edge3_m_c[0] * x) - (edge3_m_c[1] - (augment_distance * 2 / (3 ** 0.5)))
+
+    edge4_m_c = find_line_slope_and_intercept(None, rectangle_point_4, rectangle_point_1)
+    line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance * 2))
+
+    solution3 = solve([line1, line2], (x, y))
+    # print("Intersection points with first line: ", solution3)
+    solution4 = solve([line2, line3], (x, y))
+    # print("Intersection points with second line: ", solution4)
+    solution5 = solve([line3, line4], (x, y))
+    # print("Intersection points with third line: ", solution5)
+    solution6 = solve([line4, line1], (x, y))
+    # print("Intersection points with Fourth line: ", solution6)
+
+    solution = [solution3, solution4, solution5, solution6]
+
+    return solution
+
+
+
+
+def polygon_right_points(clearance, radius_rigid_robot, parent_coord, child_coord):
+    augment_distance = radius_rigid_robot + clearance
+
+    nonconvex_point_1 = [100, 150]
+    nonconvex_point_2 = [75, 185]
+    nonconvex_point_3 = [58, 185]
+    nonconvex_point_4 = [50, 150]
+    nonconvex_point_5 = [75, 120]
+
+    # We set the flags by testing for image point inside the rectangle
+    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the nonconvex_obstacle
+    edge1_m_c = find_line_slope_and_intercept(None, nonconvex_point_1, nonconvex_point_2)
+    line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] + (augment_distance / 0.58124))
+
+    edge2_m_c = find_line_slope_and_intercept(None, nonconvex_point_2, nonconvex_point_3)
+    line2 = y - (edge2_m_c[0] * x) - (edge2_m_c[1] + (augment_distance / 1))
+
+    # edge 3 is not augmented with clearance+robot_radius since its inside the nonconvex polygon
+    edge3_m_c = find_line_slope_and_intercept(None, nonconvex_point_3, nonconvex_point_4)
+    line3 = y - (edge3_m_c[0] * x) - (edge3_m_c[1] + (augment_distance / 0.27472))
+
+    edge4_m_c = find_line_slope_and_intercept(None, nonconvex_point_4, nonconvex_point_5)
+    line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance / 0.64018))
+
+    edge5_m_c = find_line_slope_and_intercept(None, nonconvex_point_5, nonconvex_point_1)
+    line5 = y - (edge5_m_c[0] * x) - (edge5_m_c[1] - (augment_distance / 0.640184))
+
+    solution11 = solve([line1, line2], (x, y))
+    # print("Intersection points with first line: ", solution11)
+    solution12 = solve([line2, line3], (x, y))
+    # print("Intersection points with second line: ", solution12)
+    solution13 = solve([line3, line4], (x, y))
+    # print("Intersection points with third line: ", solution13)
+    solution14 = solve([line4, line5], (x, y))
+    # print("Intersection points with Fourth line: ", solution14)
+    solution15 = solve([line5, line1], (x, y))
+    # print("Intersection points with Fourth line: ", solution15)
+
+    solution = [solution11, solution12, solution13, solution14, solution15]
+
+    return solution
+
+
+def polygon_left_points(clearance, radius_rigid_robot, parent_coord, child_coord):
+    augment_distance = radius_rigid_robot + clearance
+
+    nonconvex_point_1 = [50, 150]
+    nonconvex_point_2 = [60, 185]
+    nonconvex_point_3 = [25, 185]
+    nonconvex_point_4 = [20, 120]
+
+    # We set the flags by testing for image point inside the rectangle
+    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the nonconvex_obstacle
+    edge1_m_c = find_line_slope_and_intercept(None, nonconvex_point_1, nonconvex_point_2)
+    line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] - (augment_distance / 0.27472))
+
+    edge2_m_c = find_line_slope_and_intercept(None, nonconvex_point_2, nonconvex_point_3)
+    line2 = y - (edge2_m_c[0] * x) - (edge2_m_c[1] + (augment_distance / 1))
+
+    # edge 3 is not augmented with clearance+robot_radius since its inside the nonconvex polygon
+    edge3_m_c = find_line_slope_and_intercept(None, nonconvex_point_3, nonconvex_point_4)
+    line3 = y - (edge3_m_c[0] * x) - (edge3_m_c[1] + (augment_distance / 0.0767))
+
+    edge4_m_c = find_line_slope_and_intercept(None, nonconvex_point_4, nonconvex_point_1)
+    line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance / 0.7071))
+
+    solution16 = solve([line1, line2], (x, y))
+    # print("Intersection points with first line: ", solution16)
+    solution17 = solve([line2, line3], (x, y))
+    # print("Intersection points with second line: ", solution17)
+    solution18 = solve([line3, line4], (x, y))
+    # print("Intersection points with third line: ", solution18)
+    solution19 = solve([line4, line1], (x, y))
+    # print("Intersection points with Fourth line: ", solution19)
+
+    solution = [solution16, solution17, solution18, solution19]
+
+    return solution
