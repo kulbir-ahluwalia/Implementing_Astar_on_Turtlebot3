@@ -369,14 +369,14 @@ def intersection_check_of_vectors(clearance, radius_rigid_robot, parent_coord, c
         return False
 
 
-print(intersection_check_of_vectors(1, 1, [197, 150], [253, 150]))  # should give False
-
-print(intersection_check_of_vectors(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
-
-print(intersection_check_of_vectors(1, 1, [95, 20], [90, 50]))  # False case
-
-print(intersection_check_of_vectors(1, 1, [190, 25], [260, 25]))  # False case, horizontal vector cuts the rhombus
-print(intersection_check_of_vectors(1, 1, [225, 5], [225, 50]))  # False case, vertical vector cuts the rhombus
-
-print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
-print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
+# print(intersection_check_of_vectors(1, 1, [197, 150], [253, 150]))  # should give False
+#
+# print(intersection_check_of_vectors(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
+#
+# print(intersection_check_of_vectors(1, 1, [95, 20], [90, 50]))  # False case
+#
+# print(intersection_check_of_vectors(1, 1, [190, 25], [260, 25]))  # False case, horizontal vector cuts the rhombus
+# print(intersection_check_of_vectors(1, 1, [225, 5], [225, 50]))  # False case, vertical vector cuts the rhombus
+#
+# print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
+# print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
