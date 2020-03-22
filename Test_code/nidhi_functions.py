@@ -169,11 +169,48 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
     print("Intersection points with Fourth line: ", solution15)
 
 
+def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord):
+    augment_distance = radius_rigid_robot + clearance
+
+    nonconvex_point_1 = [50, 150]
+    nonconvex_point_2 = [60, 185]
+    nonconvex_point_3 = [25, 185]
+    nonconvex_point_4 = [20, 120]
+
+    line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
+    line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
+
+    # We set the flags by testing for image point inside the rectangle
+    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the nonconvex_obstacle
+    edge1_m_c = find_line_slope_and_intercept(test_point_coord, nonconvex_point_1, nonconvex_point_2)
+    line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] - (augment_distance / 0.27472))
+
+    edge2_m_c = find_line_slope_and_intercept(test_point_coord, nonconvex_point_2, nonconvex_point_3)
+    line2 = y - (edge2_m_c[0] * x) - (edge2_m_c[1] + (augment_distance / 1))
+
+    # edge 3 is not augmented with clearance+robot_radius since its inside the nonconvex polygon
+    edge3_m_c = find_line_slope_and_intercept(test_point_coord, nonconvex_point_3, nonconvex_point_4)
+    line3 = y - (edge3_m_c[0] * x) - (edge3_m_c[1] + (augment_distance / 0.0767))
+
+    edge4_m_c = find_line_slope_and_intercept(test_point_coord, nonconvex_point_4, nonconvex_point_1)
+    line4 = y - (edge4_m_c[0] * x) - (edge4_m_c[1] - (augment_distance / 0.7071))
+
+    solution16 = solve([line1, line_equation], (x, y))
+    print("Intersection points with first line: ", solution16)
+    solution17 = solve([line2, line_equation], (x, y))
+    print("Intersection points with second line: ", solution17)
+    solution18 = solve([line3, line_equation], (x, y))
+    print("Intersection points with third line: ", solution18)
+    solution19 = solve([line4, line_equation], (x, y))
+    print("Intersection points with Fourth line: ", solution19)
+    solution20 = solve([line5, line_equation], (x, y))
+    print("Intersection points with Fourth line: ", solution20)
+
 # ellipse_intersection_check(1,1,[200,150],[250,150])
 # rectangle_intersection(1,1,[200,150],[250,150])
 print(polygon_right_intersection(1,1,[200,150],[250,150]))
 print(rhombus_intersection(1,1,[190,24],[255,26]))   #False case, horizontal vector cuts the rhombus
 print(rhombus_intersection(1,1,[225,5],[225,50]))   #False case, vector cuts the rhombus
-
+print(polygon_right_intersection(1,1,[200,150],[250,150]))
 
 
