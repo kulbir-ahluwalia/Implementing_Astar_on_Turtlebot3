@@ -12,12 +12,12 @@ A* algorithm is an informed search based on which the path planning algorithm fo
  
  
  ## Installation 
- Above mentioned dependencies can be installed using the following links:
- Numpy -https://docs.scipy.org/doc/numpy-1.10.1/user/install.html
- OpenCV -https://docs.opencv.org/master/d5/de5/tutorial_py_setup_in_windows.html
- Math - https://datatofish.com/install-package-python-using-pip/
- Sympy - https://docs.sympy.org/latest/install.html
- Matplotlib - https://matplotlib.org/users/installing.html
+ Above mentioned dependencies can be installed using the following links:   
+ Numpy -https://docs.scipy.org/doc/numpy-1.10.1/user/install.html   
+ OpenCV -https://docs.opencv.org/master/d5/de5/tutorial_py_setup_in_windows.html   
+ Math - https://datatofish.com/install-package-python-using-pip/   
+ Sympy - https://docs.sympy.org/latest/install.html   
+ Matplotlib - https://matplotlib.org/users/installing.html   
  
 ## How to Run
 1. Clone this repo or extract the zip file "proj3p2_18_python". <br>
