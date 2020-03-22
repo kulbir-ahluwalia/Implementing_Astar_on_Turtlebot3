@@ -34,11 +34,14 @@ def circular_intersection_check(clearance, radius_rigid_robot, parent_coord, chi
     for root in solution:
         # print(root)
         if (not root[0].is_real) or (not root[1].is_real) :   #complex root = no intersection = False
-            return False
+            return True
         x_max = max(parent_coord[0], child_coord[0])
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
+
+        if math.isnan(root[0]) or math.isnan(root[1]):
+            return True
 
 
         if (x_min <= root[0] <= x_max) and (y_min <= root[1] <= y_max):
@@ -73,11 +76,14 @@ def ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, chil
 
     for root in solution2:
         if (not root[0].is_real) or (not root[1].is_real):  # complex root = no intersection = False
-            return False
+            return True
         x_max = max(parent_coord[0], child_coord[0])
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
+
+        if math.isnan(root[0]) or math.isnan(root[1]):
+            return True
 
 
         if (x_min <= root[0] <= x_max) and (y_min <= root[1] <= y_max):
@@ -135,6 +141,9 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
+
+        if len(root) == 0 or math.isnan(root[x]) or math.isnan(root[y]):
+            return True
 
 
         if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
@@ -195,6 +204,9 @@ def rhombus_intersection(clearance, radius_rigid_robot, parent_coord, child_coor
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
 
+        if len(root) == 0  or math.isnan(root[x]) or math.isnan(root[y]):
+            return True
+
 
         if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
             not_intersecting = False
@@ -254,6 +266,10 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
+        print('root', root, len(root))
+
+        if len(root) == 0 or math.isnan(root[x]) or math.isnan(root[y]):
+            return True
 
 
         if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
@@ -309,6 +325,9 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
         y_max = max(parent_coord[1], child_coord[1])
         y_min = min(parent_coord[1], child_coord[1])
 
+        if len(root) == 0 or math.isnan(root[x]) or math.isnan(root[y]):
+            return True
+
 
         if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
             not_intersecting = False
@@ -319,7 +338,7 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
     return not_intersecting
 
 
-# print(circular_intersection_check(1, 1, [197, 150], [253, 150]))  # should give False
+print(circular_intersection_check(0, 0, [6.0, 11.732050807568877], [5, 10]))  # should give False
 #
 # print(ellipse_intersection_check(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
 #

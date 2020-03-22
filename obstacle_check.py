@@ -5,6 +5,7 @@ import cv2
 from time import process_time
 #from google.colab.patches import cv2_imshow
 
+from intersection_check import *
 
 
 def cart2img(adjust_coord):
@@ -297,7 +298,7 @@ def boundary_obstacle(clearance, radius_rigid_robot, test_point_coord):
 
 
 def test_point_obstacle_check(clearance, radius_rigid_robot, test_point_coord, image):
-    test_point_coord = cart2img(test_point_coord)
+    #test_point_coord = cart2img(test_point_coord)
     if circular_obstacle(clearance, radius_rigid_robot, test_point_coord):
         return True
     elif ellipsoid_obstacle(clearance, radius_rigid_robot, test_point_coord):

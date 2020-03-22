@@ -1,3 +1,8 @@
+# ENPM 661 - Planning for Autonomous Robots
+# Project 3 - Implementing A* Algorithm for Turtlebot 3
+# Team - Nidhi Bhojak           , UID - 116787529
+#        Kulbir Singh Ahluwalia , UID - 116836050
+
 # import intersection_check as ic
 from intersection_check import *
 from obstacle_check import *
@@ -26,11 +31,11 @@ def heu(node1, node2):
   return dist
 
 
-def move_along(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle):
+def move_along(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     angle = math.radians(test_point_angle + 0)
-    new_point_x= test_point_coord[0] + math.cos(angle)
-    new_point_y= test_point_coord[1] + math.sin(angle)
-    new_point = [new_point_x, new_point_y]
+    new_point_x= test_point_coord[0] + step_size_robot*math.cos(angle)
+    new_point_y= test_point_coord[1] + step_size_robot*math.sin(angle)
+    new_point = [new_point_x, new_point_y, test_point_angle]
     action_cost = 1
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
         return new_point, action_cost
@@ -38,11 +43,11 @@ def move_along(image, clearance, radius_rigid_robot, test_point_coord, test_poin
         return None, None
 
 
-def move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle):
+def move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     angle = math.radians(test_point_angle + 30)
-    new_point_x= test_point_coord[0] + math.cos(angle)
-    new_point_y= test_point_coord[1] + math.sin(angle)
-    new_point = [new_point_x, new_point_y]
+    new_point_x= test_point_coord[0] + step_size_robot*math.cos(angle)
+    new_point_y= test_point_coord[1] + step_size_robot*math.sin(angle)
+    new_point = [new_point_x, new_point_y, test_point_angle + 30]
 
     # intersection_check_of_vectors(clearance, radius_rigid_robot, parent_coord, child_coord):
     # test_point_coord = parent_coord
@@ -55,11 +60,11 @@ def move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return None, None
 
 
-def move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle):
+def move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     angle = math.radians(test_point_angle + 60)
-    new_point_x= test_point_coord[0] + math.cos(angle)
-    new_point_y= test_point_coord[1] + math.sin(angle)
-    new_point = [new_point_x, new_point_y]
+    new_point_x= test_point_coord[0] + step_size_robot*math.cos(angle)
+    new_point_y= test_point_coord[1] + step_size_robot*math.sin(angle)
+    new_point = [new_point_x, new_point_y, test_point_angle + 60]
     action_cost = 1
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
         # left_point_coord = [test_point_coord[0]-1,test_point_coord[1]]
@@ -68,11 +73,11 @@ def move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return None, None
 
 
-def move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle):
+def move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     angle = math.radians(test_point_angle - 30)
-    new_point_x= test_point_coord[0] + math.cos(angle)
-    new_point_y= test_point_coord[1] + math.sin(angle)
-    new_point = [new_point_x, new_point_y]
+    new_point_x= test_point_coord[0] + step_size_robot*math.cos(angle)
+    new_point_y= test_point_coord[1] + step_size_robot*math.sin(angle)
+    new_point = [new_point_x, new_point_y, test_point_angle - 30]
     action_cost = 1
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
         # right_point_coord = [test_point_coord[0]+1,test_point_coord[1]]
@@ -81,11 +86,11 @@ def move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return None, None
 
 
-def move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle):
+def move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     angle = math.radians(test_point_angle - 60)
-    new_point_x= test_point_coord[0] + math.cos(angle)
-    new_point_y= test_point_coord[1] + math.sin(angle)
-    new_point = [new_point_x, new_point_y]
+    new_point_x= test_point_coord[0] + step_size_robot*math.cos(angle)
+    new_point_y= test_point_coord[1] + step_size_robot*math.sin(angle)
+    new_point = [new_point_x, new_point_y, test_point_angle - 60]
     action_cost = 1
     up_right_point_coord = [test_point_coord[0] + 1, test_point_coord[1] - 1]
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
@@ -94,13 +99,13 @@ def move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_
         return None, None
 
 
-def get_new_node(image, action, clearance, radius_rigid_robot, test_point_coord, test_point_angle):
+def get_new_node(image, action, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot):
     action_map = {
-        'S': move_along(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle),
-        'UP1': move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle),
-        'UP2': move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle),
-        'DN1': move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle),
-        'DN2': move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle),
+        'S': move_along(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot),
+        'UP1': move_up1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot),
+        'UP2': move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot),
+        'DN1': move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot),
+        'DN2': move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_angle, step_size_robot),
        }
     return action_map[action]
 
@@ -114,17 +119,35 @@ def get_minimum_element(queue):
 
 def round_off_till_threshold(number, threshold):
     number_double = round((number / threshold))
-    return number_double*threshold
+    return int(number_double*threshold)
 
 
-def approximation(node):
-    x = round_off_till_threshold(node.position[0], 0.5)
-    y = round_off_till_threshold(node.position[1], 0.5)
-    angle_theta = round_off_till_threshold(node.angle, 30)
-    return (x, y, angle_theta)
+def approximation(x, y, angle_theta):
+    x = round_off_till_threshold(x, 0.5)
+    y = round_off_till_threshold(y, 0.5)
+
+    angle_theta = round_off_till_threshold(angle_theta, 30)
+    return (x, y, int(angle_theta/30))
 
 
-def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigid_robot):
+def check_goal(position, goal):
+  if (((position[0]- goal[0])**2)+ ((position[1] - goal[1])**2)) <= (1.5)**2:
+    return True
+  else:
+    return False
+
+
+def reset_angle_in_range(angle):
+      if angle >= 360:
+          return angle % 360
+      if angle < 0:
+          return 360 + angle
+      else:
+          return angle
+
+
+
+def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigid_robot, step_size_robot, initial_angle):
     # class GraphNode:
     #     def __init__(self, point):            #initialise attributes position, cost and parent
     #         self.position = point
@@ -158,35 +181,39 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
         current_angle = current_node.angle
         # visited.append(str(current_point))  # convert the current_point to an immutable string and store it in the list "visited"
 
-        visited_set.add(approximation(current_node))  # you can only put immutable objects in a set, string is also immutable
+        visited_set.add(approximation(current_point[0], current_point[1], current_angle))  # you can only put immutable objects in a set, string is also immutable
         visited_list.append(current_node)
 
-        if current_point == goal_node_pos:
+        if check_goal(current_point, goal_node_pos):
             goal_reached = True
+            print('Goal Reached')
             print("Cost = ", current_node.cost)
+
             break
 
         # to generate, explore and append possible next positions, make a list of all the generated child nodes
         child_nodes = []
-        # actions = ["U", "D", "L", "R", "UR", "DR", "UL", "DL"],     action = iterable element
+        # actions = ["S", "UP1", "UP2", "DN1", "DN2"] ,     action = iterable element
         for action in actions:
             # get_new_node is run for every action , U, D, L, R, UR, DR, UL, DL
-            new_point, base_cost = get_new_node(image, action, clearance, radius_rigid_robot, current_point, current_angle)
+            new_point, base_cost = get_new_node(image, action, clearance, radius_rigid_robot, current_point, current_angle, step_size_robot)
             if new_point is not None:  # present in the explorable area and not in obstacle
               #if new_point is not visited[int()][][]
                 child_nodes.append((new_point, base_cost))  # append the new node in child nodes along with cost
 
-        # print(child_nodes[0])        #first element of the list = ([x,y],cost)
-        # print(child_nodes[0][0])     #first element of first element of the list = [x,y]
+        # print(child_nodes[0])        #first element of the list = ([x,y,theta],cost)
+        # print(child_nodes[0][0])     #first element of first element of the list = [x,y,theta]
         # print(child_nodes[0][0][1])  #second element of first element of first element of the list = y
 
         for child in child_nodes:  # child = iterable element in child_nodes = of the format ([x,y],cost)
-            if str(child[0]) not in visited_set:
+            child[0][2] = reset_angle_in_range(child[0][2])
+            approx_x, approx_y, approx_theta = approximation(child[0][0], child[0][1], child[0][2])
+            if approximation(child[0][0], child[0][1], child[0][2]) not in visited_set:
                 child_position = child[0]  # child[0] = [x,y]
                 child_position_x = child[0][0]  # child[0][0] = x
                 child_position_y = child[0][1]  # child[0][1] = y
-
-                prev_cost = cost_updates_matrix[int(child[0][1]), child[0][0]]  # row,column
+                print(approx_x, approx_y, approx_theta)
+                prev_cost = cost_updates_matrix[approx_y, approx_x, approx_theta]  # row,column
                 # prev_cost = cost_updates_matrix[y, x]  # row,column
 
                 # add the cost of the child to the current node's cost to get new cost
@@ -194,14 +221,15 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
                 total_cost = new_cost + heu(child[0], goal_node_pos)
 
                 if new_cost < prev_cost:
-                    cost_updates_matrix[child[0][1], child[0][0]] = new_cost
+                    print(approx_x, approx_y, approx_theta)
+                    cost_updates_matrix[approx_y, approx_x, approx_theta] = new_cost
                     child_node = GraphNode(child[0])
                     child_node.cost = new_cost
                     child_node.parent = current_node
                     child_node.total_cost = total_cost
+                    child_node.angle = child[0][2]
                     queue.append(child_node)  # child_node is yet to be explored
-                    parent_child_map[tuple(child[0])] = tuple(
-                        current_point)  # key, always immutable, here, tuple = tuple(child[0])
+                    parent_child_map[tuple(child[0])] = tuple([current_point[0], current_point[1], current_angle])  # key, always immutable, here, tuple = tuple(child[0])
                     #   #value, can be anything = current_point
 
     end = process_time()
@@ -224,29 +252,34 @@ def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_nod
         exit(0)
 
 
-radius_rigid_robot = int(input("Enter the radius of the rigid robot \n"))
-clearance = int(input("Enter the desired clearance for the rigid robot\n"))
-# Uncomment to choose different positions:-
-start_node_x = int(input("Enter the starting x coordinate for the rigid robot\n"))
-start_node_y = int(input("Enter the starting y coordinate for the rigid robot\n"))
-initial_angle = int(input("Enter the initial angle of the robot in degree\n"))
-
-step_size_robot = int(input("Enter the step size of movement of the robot: "))
-if (step_size_robot < 1 and step_size_robot > 10):
-    print("Step_size_robot is out of range. Enter step_size_robot from [0,10]. Restart program!")
-    exit(0)
-
-
-goal_node_x = int(input("Enter the goal x coordinate for the rigid robot\n"))
-goal_node_y = int(input("Enter the goal y coordinate for the rigid robot\n"))
+# radius_rigid_robot = int(input("Enter the radius of the rigid robot \n"))
+# clearance = int(input("Enter the desired clearance for the rigid robot\n"))
+# # Uncomment to choose different positions:-
+# start_node_x = int(input("Enter the starting x coordinate for the rigid robot\n"))
+# start_node_y = int(input("Enter the starting y coordinate for the rigid robot\n"))
+# initial_angle = int(input("Enter the initial angle of the robot in degree\n"))
+#
+# step_size_robot = int(input("Enter the step size of movement of the robot: "))
+# if (step_size_robot < 1 and step_size_robot > 10):
+#     print("Step_size_robot is out of range. Enter step_size_robot from [0,10]. Restart program!")
+#     exit(0)
+#
+#
+# goal_node_x = int(input("Enter the goal x coordinate for the rigid robot\n"))
+# goal_node_y = int(input("Enter the goal y coordinate for the rigid robot\n"))
 
 # for testing
-# start_node_x = 5
-# start_node_y = 10
-# goal_node_x = 20
-# goal_node_y = 30
-# clearance = 2
-# radius_rigid_robot = 2
+start_node_x = 5
+start_node_y = 5
+
+goal_node_x = 45
+goal_node_y = 45
+
+step_size_robot = 5
+initial_angle = 0
+
+clearance = 0
+radius_rigid_robot = 0
 
 
 if (start_node_x < 0 and start_node_x > 300) and (goal_node_x < 0 and goal_node_x > 300):
@@ -322,16 +355,39 @@ def main():
     start_node_position = [start_node_x, start_node_y]
     goal_node_position = [goal_node_x, goal_node_y]
 
+    #find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigid_robot):
+
     visited_list, parent_child_map = find_path_astar(image, start_node_position, goal_node_position, clearance,
-                                                        radius_rigid_robot)
+                                                        radius_rigid_robot, step_size_robot, initial_angle)
+
+
+
+    # plot the path:
+    fig, ax = plt.subplots()
+    plt.grid()
+    #
+    ax.set_aspect('equal')
+
+    plt.xlim(0, 60)
+    plt.ylim(0, 60)
 
     for v in visited_list:
-        image[v[1], v[0]] = (255, 255, 0)
-        resized_new = cv2.resize(image, None, fx=6, fy=6, interpolation=cv2.INTER_CUBIC)
-        cv2_imshow(resized_new)
-        if cv2.waitKey(1) == 27:
-            break
 
+        child_pos  = v.position
+        if v.parent is not None:
+            parent_pos = v.parent.position
+            ax.quiver(parent_pos[0], parent_pos[1], child_pos[0]-parent_pos[0], child_pos[1]-parent_pos[1], units='xy', scale=1)
+
+        #image[v[1], v[0]] = (255, 255, 0)
+        #resized_new = cv2.resize(image, None, fx=6, fy=6, interpolation=cv2.INTER_CUBIC)
+        #cv2_imshow(resized_new)
+        #if cv2.waitKey(1) == 27:
+        #    break
+
+    fig.show()
+    #fig.draw()
+    plt.show()
+    '''
     trace_path = []
     parent = parent_child_map[tuple(goal_node_position)]
     while parent is not None:
@@ -352,6 +408,7 @@ def main():
     plt.imshow(image)
     # print(image)
     plt.show()
+    '''
 
 
 if __name__ == "__main__":
