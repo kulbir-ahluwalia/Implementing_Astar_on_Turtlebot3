@@ -1,4 +1,4 @@
-import Test_code.intersection_check as ic
+# import intersection_check as ic
+from intersection_check import *
 
 
-ic.
