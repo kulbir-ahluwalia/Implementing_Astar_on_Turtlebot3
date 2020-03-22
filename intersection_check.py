@@ -109,8 +109,7 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
     else:
         line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
 
-    # We set the flags by testing for image point inside the rectangle
-    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the rectangle
+
     edge1_m_c = find_line_slope_and_intercept(None, rectangle_point_1, rectangle_point_2)
     line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] + (augment_distance * 2 / (3 ** 0.5)))
 
@@ -169,8 +168,6 @@ def rhombus_intersection(clearance, radius_rigid_robot, parent_coord, child_coor
     else:
         line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
 
-    # We set the flags by testing for image point inside the rectangle
-    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the rectangle
     edge1_m_c = find_line_slope_and_intercept(None, rhombus_point_1, rhombus_point_2)
     if edge1_m_c[0] == math.inf:  # not needed btw, since rhombus sides are always at an angle, slope is not infinity
         line1 = x - edge1_m_c[1]
@@ -229,10 +226,10 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
     line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
     line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
 
-    # We set the flags by testing for image point inside the rectangle
-    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the nonconvex_obstacle
+
     edge1_m_c = find_line_slope_and_intercept(None, nonconvex_point_1, nonconvex_point_2)
     line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] + (augment_distance / 0.58124))
+    print(line1)
 
     edge2_m_c = find_line_slope_and_intercept(None, nonconvex_point_2, nonconvex_point_3)
     line2 = y - (edge2_m_c[0] * x) - (edge2_m_c[1] + (augment_distance / 1))
@@ -292,8 +289,6 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
     line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
     line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
 
-    # We set the flags by testing for image point inside the rectangle
-    # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the nonconvex_obstacle
     edge1_m_c = find_line_slope_and_intercept(None, nonconvex_point_1, nonconvex_point_2)
     line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] - (augment_distance / 0.27472))
 

@@ -1,5 +1,5 @@
 # ENPM 661 - Planning for Autonomous Robots
-# Project 3 - Implementing A* Algorithm for Turtlebot 3
+# Project 3 - Implementing A* Algorithm for Rigid Robot
 # Team - Nidhi Bhojak           , UID - 116787529
 #        Kulbir Singh Ahluwalia , UID - 116836050
 
@@ -12,7 +12,7 @@ import math
 import matplotlib.pyplot as plt
 import cv2
 from time import process_time
-#from google.colab.patches import cv2_imshow
+
 
 visited = np.zeros((600,400,12))
 
@@ -67,7 +67,6 @@ def move_up2(image, clearance, radius_rigid_robot, test_point_coord, test_point_
     new_point = [new_point_x, new_point_y, test_point_angle + 60]
     action_cost = 1
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
-        # left_point_coord = [test_point_coord[0]-1,test_point_coord[1]]
         return new_point, action_cost
     else:
         return None, None
@@ -80,7 +79,6 @@ def move_dn1(image, clearance, radius_rigid_robot, test_point_coord, test_point_
     new_point = [new_point_x, new_point_y, test_point_angle - 30]
     action_cost = 1
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
-        # right_point_coord = [test_point_coord[0]+1,test_point_coord[1]]
         return new_point, action_cost
     else:
         return None, None
@@ -92,7 +90,6 @@ def move_dn2(image, clearance, radius_rigid_robot, test_point_coord, test_point_
     new_point_y= test_point_coord[1] + step_size_robot*math.sin(angle)
     new_point = [new_point_x, new_point_y, test_point_angle - 60]
     action_cost = 1
-    up_right_point_coord = [test_point_coord[0] + 1, test_point_coord[1] - 1]
     if (intersection_check_of_vectors(clearance, radius_rigid_robot, test_point_coord, new_point)) == False:
         return new_point, action_cost
     else:
@@ -153,9 +150,10 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     #         self.position = point
     #         self.cost = math.inf    #initialise initial cost as infinity for every node
     #         self.parent = None      #initialise initial parent as None for every node
+    #         self.angle = 0          #initialise initial angle
     start_node = GraphNode(start_node_pos)
     start_node.cost = 0  # initialise cost of start node = 0
-    start_node.angle = initial_angle
+    start_node.angle = initial_angle #Set the angle of start node as given by user
 
     # visited = list()  # list of all visited nodes
     queue = [start_node]  # queue is a list that contains yet to be explored node "objects"
@@ -163,8 +161,8 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
 
     actions = ["S", "UP1", "UP2", "DN1", "DN2"]  # define a list with all the possible actions
     visited_set = set()  # a set is used to remove the duplicate node values
-    visited_list = []  # a set is used to visualize the order of nodes visited and to maintain order
-    cost_updates_matrix = np.zeros((400, 600, 12), dtype=object)
+    visited_list = []  # a list is used to visualize the order of nodes visited and to maintain order
+    cost_updates_matrix = np.zeros((400, 600, 12), dtype=object)   #To keep track of duplicate nodes
     # print(cost_updates_matrix)
 
     cost_updates_matrix[:, :, :] = math.inf  # initialise cost update matrix with infinite costs for every node
@@ -174,7 +172,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     parent_child_map[tuple([start_node_pos[0], start_node_pos[1], initial_angle])] = None  # for start node, there is no parent
     # print(parent_child_map)
 
-    start = process_time()  # start the time counter for calculating run time for the Dijkstra's algorithm
+    start = process_time()  # start the time counter for calculating run time for the A* algorithm
     last_node = None
     while len(queue) > 0:  # as long as there are nodes yet to be checked in the queue, while loop keeps running
         current_node = get_minimum_element(queue)  # choose the node object with minimum cost
