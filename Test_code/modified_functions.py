@@ -604,6 +604,10 @@ def plot_map(clearance, radius_rigid_robot):
     return image
 
 
+def cv2_imshow(resized_new):
+    pass
+
+
 def main():
     image = plot_map(clearance, radius_rigid_robot)
 
