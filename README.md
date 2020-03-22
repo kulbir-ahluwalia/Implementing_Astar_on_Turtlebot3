@@ -4,7 +4,7 @@ A* algorithm is an informed search based on which the path planning algorithm fo
 ## System and library requirements.
  - Python3
  - Numpy
- - cv2
+ - OpenCV
  - Math
  - Sympy
  - Matplotlib
