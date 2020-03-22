@@ -32,6 +32,9 @@ def circular_intersection_check(clearance, radius_rigid_robot, parent_coord, chi
 
     not_intersecting = True
     for root in solution:
+        # print(root)
+        if (not root[0].is_real) or (not root[1].is_real) :   #complex root = no intersection = False
+            return False
         x_max = max(parent_coord[0], child_coord[0])
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
@@ -67,7 +70,10 @@ def ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, chil
     # print(solution2)
 
     not_intersecting = True
+
     for root in solution2:
+        if (not root[0].is_real) or (not root[1].is_real):  # complex root = no intersection = False
+            return False
         x_max = max(parent_coord[0], child_coord[0])
         x_min = min(parent_coord[0], child_coord[0])
         y_max = max(parent_coord[1], child_coord[1])
@@ -313,14 +319,64 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
     return not_intersecting
 
 
-print(circular_intersection_check(1, 1, [197, 150], [253, 150]))  # should give False
+# print(circular_intersection_check(1, 1, [197, 150], [253, 150]))  # should give False
+#
+# print(ellipse_intersection_check(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
+#
+# print(rectangle_intersection(1, 1, [95, 20], [90, 50]))  # False case
+#
+# print(rhombus_intersection(1, 1, [190, 25], [260, 25]))  # False case, horizontal vector cuts the rhombus
+# print(rhombus_intersection(1, 1, [225, 5], [225, 50]))  # False case, vertical vector cuts the rhombus
+#
+# print(polygon_right_intersection(1, 1, [10, 110], [80, 187]))
+# print(polygon_left_intersection(1, 1, [10, 110], [80, 187]))
 
-print(ellipse_intersection_check(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
+def boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord):
+    augment_distance = radius_rigid_robot + clearance
+    x = child_coord[0]
+    y = child_coord[1]
 
-print(rectangle_intersection(1, 1, [95, 20], [90, 50]))  # False case
+    if 0 <= x < augment_distance:
+        return True
+    elif (299 - augment_distance) < x <= 299:
+        return True
+    elif 0 <= y < augment_distance:
+        return True
+    elif (199 - augment_distance) < y <= 199:
+        return True
+    else:
+        return False
 
-print(rhombus_intersection(1, 1, [190, 25], [260, 25]))  # False case, horizontal vector cuts the rhombus
-print(rhombus_intersection(1, 1, [225, 5], [225, 50]))  # False case, vertical vector cuts the rhombus
 
-print(polygon_right_intersection(1, 1, [10, 110], [80, 187]))
-print(polygon_left_intersection(1, 1, [10, 110], [80, 187]))
+
+def intersection_check_of_vectors(clearance, radius_rigid_robot, parent_coord, child_coord):
+
+    if not(circular_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(rhombus_intersection(clearance, radius_rigid_robot,parent_coord, child_coord)):
+        return True
+    elif not(polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif (boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    else:
+        return False
+
+
+print(intersection_check_of_vectors(1, 1, [197, 150], [253, 150]))  # should give False
+
+print(intersection_check_of_vectors(1, 1, [150, 130], [150, 70]))  # False case, vertical vector cuts the ellipse
+
+print(intersection_check_of_vectors(1, 1, [95, 20], [90, 50]))  # False case
+
+print(intersection_check_of_vectors(1, 1, [190, 25], [260, 25]))  # False case, horizontal vector cuts the rhombus
+print(intersection_check_of_vectors(1, 1, [225, 5], [225, 50]))  # False case, vertical vector cuts the rhombus
+
+print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
+print(intersection_check_of_vectors(1, 1, [10, 110], [80, 187]))
