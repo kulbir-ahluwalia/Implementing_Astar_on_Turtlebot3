@@ -73,6 +73,19 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
     solution6 = solve([line4, line_equation], (x, y))
     print("Intersection points with Fourth line: ", solution6)
 
+    solution = [solution3, solution4, solution5, solution6]
+
+    for root in solution:
+        x_max = max(parent_coord[0], child_coord[0])
+        x_min = min(parent_coord[0], child_coord[0])
+        y_max = max(parent_coord[1], child_coord[1])
+        y_min = min(parent_coord[1], child_coord[1])
+
+        if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
+            return False  # intersection present, not valid vector
+        else:
+            return True
+
 def rhombus_intersection(clearance, radius_rigid_robot, parent_coord, child_coord):
     augment_distance = radius_rigid_robot + clearance
 
