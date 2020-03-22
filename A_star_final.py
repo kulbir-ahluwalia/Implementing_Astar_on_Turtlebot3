@@ -171,10 +171,11 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     goal_reached = False  # set the goal_reached flag to zero initially
     parent_child_map = {}  # define a dictionary to store parent and child relations
     # key in a dict can't be a list, only immutable things can be used as keys, so use tuples as keys
-    parent_child_map[tuple(start_node_pos)] = None  # for start node, there is no parent
+    parent_child_map[tuple([start_node_pos[0], start_node_pos[1], initial_angle])] = None  # for start node, there is no parent
     # print(parent_child_map)
 
     start = process_time()  # start the time counter for calculating run time for the Dijkstra's algorithm
+    last_node = None
     while len(queue) > 0:  # as long as there are nodes yet to be checked in the queue, while loop keeps running
         current_node = get_minimum_element(queue)  # choose the node object with minimum cost
         current_point = current_node.position  # store the position from the (minimum cost) current_node in "current_point"
@@ -188,6 +189,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
             goal_reached = True
             print('Goal Reached')
             print("Cost = ", current_node.cost)
+            last_node = current_node
 
             break
 
@@ -237,9 +239,9 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
 
     if goal_reached:
         print('Reached')
-        return visited_list, parent_child_map
+        return visited_list, parent_child_map, last_node
     else:
-        return None, None
+        return None, None, None
 
 
 def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y):
@@ -357,7 +359,7 @@ def main():
 
     #find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigid_robot):
 
-    visited_list, parent_child_map = find_path_astar(image, start_node_position, goal_node_position, clearance,
+    visited_list, parent_child_map, last_node = find_path_astar(image, start_node_position, goal_node_position, clearance,
                                                         radius_rigid_robot, step_size_robot, initial_angle)
 
 
@@ -384,16 +386,24 @@ def main():
         #if cv2.waitKey(1) == 27:
         #    break
 
-    fig.show()
-    #fig.draw()
-    plt.show()
-    '''
+
+
     trace_path = []
-    parent = parent_child_map[tuple(goal_node_position)]
+    child_pos = last_node.position
+    child_pos_tuple = (child_pos[0], child_pos[1], last_node.angle)
+    parent = parent_child_map[child_pos_tuple]
     while parent is not None:
-        trace_path.append(parent)
+        ax.quiver(parent[0], parent[1], child_pos_tuple[0] - parent[0], child_pos_tuple[1] - parent[1], units='xy', scale=1, color='g')
+
+        #trace_path.append(parent)
+        child_pos_tuple = parent
         parent = parent_child_map[parent]
 
+    fig.show()
+    # fig.draw()
+    plt.show()
+
+    '''
     trace_path.reverse()
     for point in trace_path:
         image[point[1], point[0]] = (200, 0, 200)
