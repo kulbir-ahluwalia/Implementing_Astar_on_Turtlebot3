@@ -473,7 +473,7 @@ def main():
                     plt_name = './plots/plot' + str(ind) + '.png'
                     plt.savefig(plt_name, bbox_inches='tight')
                     plot_img = cv2.imread(plt_name)
-                    print('frame', plot_img.shape)
+                    #print('frame', plot_img.shape)
                     out.write(plot_img)
 
             #image[v[1], v[0]] = (255, 255, 0)
