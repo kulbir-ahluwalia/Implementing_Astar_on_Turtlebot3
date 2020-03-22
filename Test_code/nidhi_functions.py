@@ -15,6 +15,31 @@ def find_line_slope_and_intercept(test_point_coord, line_point_1, line_point_2):
     # print(slope,intercept)
 
 
+def circular_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord):
+    augment_distance = radius_rigid_robot + clearance
+
+    line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
+    line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
+    #print(line_equation)
+
+    circle_center = (225, 150)
+    equation_1 = (x - 225) ** 2 + (y - 150) ** 2 - (25 + augment_distance) ** 2
+    equation_2 = line_equation
+    # the following equation will output solutions in the form of a list
+    solution = solve([equation_1, equation_2], (x, y))
+    #print(solution)
+
+    for root in solution:
+        x_max = max(parent_coord[0], child_coord[0])
+        x_min = min(parent_coord[0], child_coord[0])
+        y_max = max(parent_coord[1], child_coord[1])
+        y_min = min(parent_coord[1], child_coord[1])
+
+        if (x_min <= root[0] <= x_max) and (y_min <= root[1] <= y_max):
+            return False  # intersection present, not valid vector
+        else:
+            return True
+
 
 def ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord):
     augment_distance = radius_rigid_robot + clearance
@@ -33,7 +58,19 @@ def ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, chil
     equation_2 = line_equation
     # the following equation will output solutions in the form of a list
     solution2 = solve([equation_1, equation_2], (x, y))
-    print(solution2)
+    # print(solution2)
+
+    for root in solution2:
+        x_max = max(parent_coord[0], child_coord[0])
+        x_min = min(parent_coord[0], child_coord[0])
+        y_max = max(parent_coord[1], child_coord[1])
+        y_min = min(parent_coord[1], child_coord[1])
+
+        if (x_min <= root[0] <= x_max) and (y_min <= root[1] <= y_max):
+            return False  # intersection present, not valid vector
+        else:
+            return True
+
 
 
 def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_coord):
@@ -181,6 +218,19 @@ def polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, chil
     solution15 = solve([line5, line_equation], (x, y))
     print("Intersection points with Fourth line: ", solution15)
 
+    solution = [solution11, solution12, solution13, solution14, solution15]
+
+    for root in solution:
+        x_max = max(parent_coord[0], child_coord[0])
+        x_min = min(parent_coord[0], child_coord[0])
+        y_max = max(parent_coord[1], child_coord[1])
+        y_min = min(parent_coord[1], child_coord[1])
+
+        if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
+            return False  # intersection present, not valid vector
+        else:
+            return True
+
 
 def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord):
     augment_distance = radius_rigid_robot + clearance
@@ -219,11 +269,33 @@ def polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child
     solution20 = solve([line5, line_equation], (x, y))
     print("Intersection points with Fourth line: ", solution20)
 
+    solution = [solution16, solution17, solution18, solution19, solution20]
+
+    for root in solution:
+        x_max = max(parent_coord[0], child_coord[0])
+        x_min = min(parent_coord[0], child_coord[0])
+        y_max = max(parent_coord[1], child_coord[1])
+        y_min = min(parent_coord[1], child_coord[1])
+
+        if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
+            return False  # intersection present, not valid vector
+        else:
+            return True
+
+
 # ellipse_intersection_check(1,1,[200,150],[250,150])
 # rectangle_intersection(1,1,[200,150],[250,150])
+
+circular_intersection_check(1,1,[197,150],[253,150])
+
+
 print(polygon_right_intersection(1,1,[200,150],[250,150]))
+
+
+
 print(rhombus_intersection(1,1,[190,24],[255,26]))   #False case, horizontal vector cuts the rhombus
-print(rhombus_intersection(1,1,[225,5],[225,50]))   #False case, vector cuts the rhombus
+print(rhombus_intersection(1,1,[225,5],[225,50]))   #False case, vertical vector cuts the rhombus
+
 print(polygon_right_intersection(1,1,[200,150],[250,150]))
 
 
