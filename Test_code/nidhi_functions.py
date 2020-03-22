@@ -1,19 +1,30 @@
 import numpy as np
-from sympy import solve
+from sympy import solve, Poly, Eq, Function, exp
+from sympy.abc import x, y, z, a, b
 import math
 
 def find_line_slope_and_intercept(test_point_coord, line_point_1, line_point_2):
-    slope = (line_point_2[1] - line_point_1[1]) / (line_point_2[0] - line_point_1[0])
-    intercept = line_point_1[1] - (slope * line_point_1[0])
+    if (line_point_2[0] - line_point_1[0])==0:
+        x_intercept = line_point_1[0]
+        return math.inf, x_intercept
+    else:
+        slope = (line_point_2[1] - line_point_1[1]) / (line_point_2[0] - line_point_1[0])
+        y_intercept = line_point_1[1] - (slope * line_point_1[0])
+        return slope, y_intercept
+
     # print(slope,intercept)
-    return slope, intercept
+
 
 
 def ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord):
     augment_distance = radius_rigid_robot + clearance
 
     line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
-    line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
+    if line_m_c[0] == math.inf:
+        line_equation = x - line_m_c[1]  # x- x_intercept
+    else:
+        line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
+
     print(line_equation)
     a = 40 + augment_distance
     b = 20 + augment_distance
@@ -34,7 +45,10 @@ def rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_co
     rectangle_point_4 = [95, 30]
 
     line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
-    line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
+    if line_m_c[0] == math.inf:
+        line_equation = x - line_m_c[1]  # x- x_intercept
+    else:
+        line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
 
     # We set the flags by testing for image point inside the rectangle
     # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the rectangle
@@ -68,12 +82,18 @@ def rhombus_intersection(clearance, radius_rigid_robot, parent_coord, child_coor
     rhombus_point_4 = [225, 10]
 
     line_m_c = find_line_slope_and_intercept(None, child_coord, parent_coord)
-    line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
+    if line_m_c[0]==math.inf:
+        line_equation = x - line_m_c[1]    # x- x_intercept
+    else:
+        line_equation = y - (line_m_c[0] * x) - (line_m_c[1])
 
     # We set the flags by testing for image point inside the rectangle
     # Because the sign for the half plane is unique for every line, we test it by using image point that is confirmed to be inside the rectangle
     edge1_m_c = find_line_slope_and_intercept(None, rhombus_point_1, rhombus_point_2)
-    line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] + (augment_distance / 0.8575))
+    if edge1_m_c[0]==math.inf:    #not needed btw, since rhombus sides are always at an angle, slope is not infinity
+        line1 = x - edge1_m_c[1]
+    else:
+        line1 = y - (edge1_m_c[0] * x) - (edge1_m_c[1] + (augment_distance / 0.8575))
 
     edge2_m_c = find_line_slope_and_intercept(None, rhombus_point_2, rhombus_point_3)
     line2 = y - (edge2_m_c[0] * x) - (edge2_m_c[1] + (augment_distance / 0.8575))
@@ -93,7 +113,25 @@ def rhombus_intersection(clearance, radius_rigid_robot, parent_coord, child_coor
     solution10 = solve([line4, line_equation], (x, y))
     print("Intersection points with Fourth line: ", solution10)
 
+    solution = [solution7, solution8, solution9, solution10]
 
-ellipse_intersection_check(1,1,[200,150],[250,150])
-rectangle_intersection(1,1,[200,150],[250,150])
-rhombus_intersection(1,1,[200,150],[250,150])
+    for root in solution:
+        x_max = max(parent_coord[0], child_coord[0])
+        x_min = min(parent_coord[0], child_coord[0])
+        y_max = max(parent_coord[1], child_coord[1])
+        y_min = min(parent_coord[1], child_coord[1])
+
+        if (x_min <= root[x] <= x_max) and (y_min <= root[y] <= y_max):
+            return False  # intersection present, not valid vector
+        else:
+            return True
+
+
+
+# ellipse_intersection_check(1,1,[200,150],[250,150])
+# rectangle_intersection(1,1,[200,150],[250,150])
+print(rhombus_intersection(1,1,[190,24],[255,26]))   #False case, horizontal vector cuts the rhombus
+print(rhombus_intersection(1,1,[225,5],[225,50]))   #False case, vector cuts the rhombus
+
+
+
