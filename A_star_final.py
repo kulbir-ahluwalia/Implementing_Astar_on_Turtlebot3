@@ -13,7 +13,7 @@ import math
 import matplotlib.pyplot as plt
 import cv2
 from time import process_time
-
+import cv2
 
 visited = np.zeros((600,400,12))
 
@@ -267,34 +267,34 @@ def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_nod
         exit(0)
 
 
-# radius_rigid_robot = int(input("Enter the radius of the rigid robot \n"))
-# clearance = int(input("Enter the desired clearance for the rigid robot\n"))
-# # Uncomment to choose different positions:-
-# start_node_x = int(input("Enter the starting x coordinate for the rigid robot\n"))
-# start_node_y = int(input("Enter the starting y coordinate for the rigid robot\n"))
-# initial_angle = int(input("Enter the initial angle of the robot in degree\n"))
+radius_rigid_robot = int(input("Enter the radius of the rigid robot \n"))
+clearance = int(input("Enter the desired clearance for the rigid robot\n"))
+# Uncomment to choose different positions:-
+start_node_x = int(input("Enter the starting x coordinate for the rigid robot\n"))
+start_node_y = int(input("Enter the starting y coordinate for the rigid robot\n"))
+initial_angle = int(input("Enter the initial angle of the robot in degree\n"))
+
+step_size_robot = int(input("Enter the step size of movement of the robot: "))
+if (step_size_robot < 1 and step_size_robot > 10):
+    print("Step_size_robot is out of range. Enter step_size_robot from [0,10]. Restart program!")
+    exit(0)
+
+
+goal_node_x = int(input("Enter the goal x coordinate for the rigid robot\n"))
+goal_node_y = int(input("Enter the goal y coordinate for the rigid robot\n"))
+
+# # for testing
+# start_node_x = 50
+# start_node_y = 30
 #
-# step_size_robot = int(input("Enter the step size of movement of the robot: "))
-# if (step_size_robot < 1 and step_size_robot > 10):
-#     print("Step_size_robot is out of range. Enter step_size_robot from [0,10]. Restart program!")
-#     exit(0)
+# goal_node_x = 150
+# goal_node_y = 150
 #
+# step_size_robot = 1
+# initial_angle = 60
 #
-# goal_node_x = int(input("Enter the goal x coordinate for the rigid robot\n"))
-# goal_node_y = int(input("Enter the goal y coordinate for the rigid robot\n"))
-
-# for testing
-start_node_x = 50
-start_node_y = 30
-
-goal_node_x = 50
-goal_node_y = 50
-
-step_size_robot = 1
-initial_angle = 60
-
-clearance = 5
-radius_rigid_robot = 0
+# clearance = 1
+# radius_rigid_robot = 1
 augment_distance = radius_rigid_robot + clearance
 
 if (start_node_x < 0 and start_node_x > 300) and (goal_node_x < 0 and goal_node_x > 300):
@@ -458,14 +458,23 @@ def main():
     plt.xlim(0, 300)
     plt.ylim(0, 200)
 
+    out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'XVID'), 1, (565, 379))
+
     if visited_list is not None:
 
-        for v in visited_list:
-
+        for ind, v in enumerate(visited_list):
+            print(ind)
             child_pos = v.position
             if v.parent is not None:
                 parent_pos = v.parent.position
                 ax.quiver(parent_pos[0], parent_pos[1], child_pos[0]-parent_pos[0], child_pos[1]-parent_pos[1], units='xy', scale=1)
+                if ind%3000==0:
+
+                    plt_name = './plots/plot' + str(ind) + '.png'
+                    plt.savefig(plt_name, bbox_inches='tight')
+                    plot_img = cv2.imread(plt_name)
+                    print('frame', plot_img.shape)
+                    out.write(plot_img)
 
             #image[v[1], v[0]] = (255, 255, 0)
             #resized_new = cv2.resize(image, None, fx=6, fy=6, interpolation=cv2.INTER_CUBIC)
@@ -486,6 +495,12 @@ def main():
             #trace_path.append(parent)
             child_pos_tuple = parent
             parent = parent_child_map[parent]
+
+        plt_name = './plots/plot.png'
+        plt.savefig(plt_name, bbox_inches='tight')
+        plot_img = cv2.imread(plt_name)
+        out.write(plot_img)
+        out.release()
 
 
         fig.show()

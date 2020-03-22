@@ -8,6 +8,7 @@ A* algorithm is an informed search based on which the path planning algorithm fo
  - Math
  - Sympy
  - Matplotlib
+ - Time
  
  
 ## How to Run
@@ -17,8 +18,8 @@ A* algorithm is an informed search based on which the path planning algorithm fo
 -Goal : (150, 150)
 -Radius and clearance : 1 unit each
 -Step Size: 1 unit
-Open the video "output.avi"<br>
-3. To run the code, navigate to the "Codes" folder. From the terminal, run the command `python A_star_final.py` <br>
+Open the video "output.mp4"<br>
+3. To run the code, navigate to the "Codes" folder. From the terminal, run the command `python3 A_star_final.py` <br>
 4. The program will ask for the clearance from the obstacles and then the radius of the robot, provide input in both cases in 'int' format. For eg: 2<br>
 5. Next program will ask for start point coordinates x, y and theta. Give input x-->press "Enter",Give input y-->press "Enter", Give input theta-->press "Enter" . <br>
 6. Next program will ask for goal point, follow the same methodology mentioned for start point

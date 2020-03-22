@@ -374,18 +374,18 @@ def intersection_check_of_vectors(clearance, radius_rigid_robot, parent_coord, c
 
     if not(ellipse_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
         return True
-    # elif not(circular_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
-    #     return True
-    # elif not(rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
-    #     return True
-    # elif not(rhombus_intersection(clearance, radius_rigid_robot,parent_coord, child_coord)):
-    #     return True
-    # elif not(polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
-    #     return True
-    # elif not(polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
-    #     return True
-    # elif (boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord)):
-    #     return True
+    elif not(circular_intersection_check(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(rectangle_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(rhombus_intersection(clearance, radius_rigid_robot,parent_coord, child_coord)):
+        return True
+    elif not(polygon_right_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif not(polygon_left_intersection(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
+    elif (boundary_obstacle(clearance, radius_rigid_robot, parent_coord, child_coord)):
+        return True
     else:
         return False
 
