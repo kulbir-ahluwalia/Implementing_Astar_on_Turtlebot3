@@ -153,15 +153,15 @@ def reset_angle_in_range(angle):
       else:
           return angle
 
-
-
 def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigid_robot, step_size_robot, initial_angle):
     # class GraphNode:
-    #     def __init__(self, point):            #initialise attributes position, cost and parent
+    #     def __init__(self, point):
     #         self.position = point
-    #         self.cost = math.inf    #initialise initial cost as infinity for every node
-    #         self.parent = None      #initialise initial parent as None for every node
-    #         self.angle = 0          #initialise initial angle
+    #         self.cost = math.inf
+    #         self.total_cost = 0
+    #         self.parent = None
+    #         self.angle = 0
+
     start_node = GraphNode(start_node_pos)
     start_node.cost = 0  # initialise cost of start node = 0
     start_node.angle = initial_angle #Set the angle of start node as given by user
@@ -184,14 +184,15 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     # print(parent_child_map)
 
     start = process_time()  # start the time counter for calculating run time for the A* search algorithm
-    last_node = None
+    last_node = None    #called last node because goal is not reached as such
+
     while len(queue) > 0:  # as long as there are nodes yet to be checked in the queue, while loop keeps running
         current_node = get_minimum_element(queue)  # choose the node object with minimum cost
         current_point = current_node.position  # store the position from the (minimum cost) current_node in "current_point"
         current_angle = current_node.angle
         # visited.append(str(current_point))  # convert the current_point to an immutable string and store it in the list "visited"
 
-        if approximation(current_point[0], current_point[1], current_angle) not in visited_set:
+        if approximation(current_point[0], current_point[1], current_angle) not in visited_set:     #to avoid adding duplicates in the list
             visited_list.append(current_node)
         visited_set.add(approximation(current_point[0], current_point[1], current_angle))  # you can only put immutable objects in a set, string is also immutable
 
@@ -212,6 +213,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
             new_point, base_cost = get_new_node(image, action, clearance, radius_rigid_robot, current_point, current_angle, step_size_robot)
             print(new_point)
             if new_point is not None:  # present in the explorable area and not in obstacle
+                #we get a None value as return only when the new_point is in obstacle
                 print(len(new_point))
               #if new_point is not visited[int()][][]
                 child_nodes.append((new_point, base_cost))  # append the new node in child nodes along with cost
@@ -220,13 +222,14 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
         # print(child_nodes[0][0])     #first element of first element of the list = [x,y,theta]
         # print(child_nodes[0][0][1])  #second element of first element of first element of the list = y
 
-        for child in child_nodes:  # child = iterable element in child_nodes = of the format ([x,y],cost)
+        for child in child_nodes:  # child = iterable element in child_nodes = of the format ([x,y,angle],cost)
             child[0][2] = reset_angle_in_range(child[0][2])
             approx_x, approx_y, approx_theta = approximation(child[0][0], child[0][1], child[0][2])
             if approximation(child[0][0], child[0][1], child[0][2]) not in visited_set:
-                child_position = child[0]  # child[0] = [x,y]
+                child_position = child[0]  # child[0] = [x,y, theta]
                 child_position_x = child[0][0]  # child[0][0] = x
                 child_position_y = child[0][1]  # child[0][1] = y
+                child_position_theta = child[0][2]  # child[0][2] = theta
                 print(approx_x, approx_y, approx_theta)
                 prev_cost = cost_updates_matrix[approx_y, approx_x, approx_theta]  # row,column
                 # prev_cost = cost_updates_matrix[y, x]  # row,column
@@ -237,6 +240,8 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
 
                 if total_cost < prev_cost:
                     print(approx_x, approx_y, approx_theta)
+
+                    #in cost_updates_matrix, put new cost in place of infinity
                     cost_updates_matrix[approx_y, approx_x, approx_theta] = new_cost
                     child_node = GraphNode(child[0])
                     child_node.cost = new_cost
@@ -244,6 +249,8 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
                     child_node.total_cost = total_cost
                     child_node.angle = child[0][2]
                     queue.append(child_node)  # child_node is yet to be explored
+                    #
+                    #key=child coord,  value=parent coord
                     parent_child_map[tuple(child[0])] = tuple([current_point[0], current_point[1], current_angle])  # key, always immutable, here, tuple = tuple(child[0])
                     #   #value, can be anything = current_point
 
@@ -253,6 +260,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     if goal_reached:
         print('Reached')
         return visited_list, parent_child_map, last_node
+        #return visited_set, parent_child_map, last_node
     else:
         return None, None, None
 
@@ -462,18 +470,27 @@ def main():
 
     if visited_list is not None:
 
+        # for loop is for visited_list aka explored nodes
         for ind, v in enumerate(visited_list):
-            print(ind)
+            print(ind) #ind = index
             child_pos = v.position
             if v.parent is not None:
                 parent_pos = v.parent.position
                 ax.quiver(parent_pos[0], parent_pos[1], child_pos[0]-parent_pos[0], child_pos[1]-parent_pos[1], units='xy', scale=1)
-                if ind%3000==0:
 
+                if ind%3000==0:
                     plt_name = './plots/plot' + str(ind) + '.png'
+
+                    #savefig is a function of matplotlib
                     plt.savefig(plt_name, bbox_inches='tight')
+
+                    #read the image stored
                     plot_img = cv2.imread(plt_name)
+
+                    #plot_img.shape = gives dimension of the frame
                     #print('frame', plot_img.shape)
+
+                    # write the image in the video
                     out.write(plot_img)
 
             #image[v[1], v[0]] = (255, 255, 0)
@@ -488,7 +505,11 @@ def main():
 
         child_pos = last_node.position
         child_pos_tuple = (child_pos[0], child_pos[1], last_node.angle)
+
+        #find the parent of last node
         parent = parent_child_map[child_pos_tuple]
+
+        # to trackback and plot the vectors
         while parent is not None:
             ax.quiver(parent[0], parent[1], child_pos_tuple[0] - parent[0], child_pos_tuple[1] - parent[1], units='xy', scale=1, color='g')
 
@@ -496,10 +517,12 @@ def main():
             child_pos_tuple = parent
             parent = parent_child_map[parent]
 
+
         plt_name = './plots/plot.png'
         plt.savefig(plt_name, bbox_inches='tight')
         plot_img = cv2.imread(plt_name)
         out.write(plot_img)
+
         out.release()
 
 
