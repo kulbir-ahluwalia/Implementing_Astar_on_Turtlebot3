@@ -11,7 +11,6 @@ from matplotlib.patches import *
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import cv2
 from time import process_time
 import cv2
 
