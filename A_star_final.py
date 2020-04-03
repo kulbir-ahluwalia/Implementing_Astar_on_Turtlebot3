@@ -123,6 +123,8 @@ def get_minimum_element(queue):
     for index in range(len(queue)):
         if queue[index].total_cost < queue[min_index].total_cost:
             min_index = index
+
+    #return the object with the lowest total _cost
     return queue.pop(min_index)
 
 def round_off_till_threshold(number, threshold):
@@ -174,6 +176,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     visited_set = set()  # a set is used to remove the duplicate node values
     visited_list = []  # a list is used to visualize the order of nodes visited and to maintain order
     cost_updates_matrix = np.zeros((400, 600, 12), dtype=object)   #To keep track of duplicate nodes
+    # note that the datatype in the above command is "object" because everything in python is an object, even numbers are objects.
     # print(cost_updates_matrix)
 
     cost_updates_matrix[:, :, :] = math.inf  # initialise cost update matrix with infinite costs for every node
@@ -181,16 +184,18 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
     parent_child_map = {}  # define a dictionary to store parent and child relations
     # key in a dict can't be a list, only immutable things can be used as keys, so use tuples as keys
     parent_child_map[tuple([start_node_pos[0], start_node_pos[1], initial_angle])] = None  # for start node, there is no parent
+    # parent_child_map[key=tuple(x,y,theta)] = value of the key-value pair of the dictionary = None as node 1 has no parent :(
     # print(parent_child_map)
 
     start = process_time()  # start the time counter for calculating run time for the A* search algorithm
-    last_node = None    #called last node because goal is not reached as such
+    last_node = None    #called last node because goal is not reached as such, we only reach in a 1.5 radius circle around the goal point
 
     while len(queue) > 0:  # as long as there are nodes yet to be checked in the queue, while loop keeps running
         current_node = get_minimum_element(queue)  # choose the node object with minimum cost
         current_point = current_node.position  # store the position from the (minimum cost) current_node in "current_point"
         current_angle = current_node.angle
         # visited.append(str(current_point))  # convert the current_point to an immutable string and store it in the list "visited"
+
 
         if approximation(current_point[0], current_point[1], current_angle) not in visited_set:     #to avoid adding duplicates in the list
             visited_list.append(current_node)
@@ -202,7 +207,6 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
             print('Goal Reached')
             print("Cost = ", current_node.cost)
             last_node = current_node
-
             break
 
         # to generate, explore and append possible next positions, make a list of all the generated child nodes
@@ -213,8 +217,8 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
             new_point, base_cost = get_new_node(image, action, clearance, radius_rigid_robot, current_point, current_angle, step_size_robot)
             print(new_point)
             if new_point is not None:  # present in the explorable area and not in obstacle
-                #we get a None value as return only when the new_point is in obstacle
-                print(len(new_point))
+                #we get a None value as return "None" only when the new_point is in obstacle
+                # print(len(new_point))
               #if new_point is not visited[int()][][]
                 child_nodes.append((new_point, base_cost))  # append the new node in child nodes along with cost
 
@@ -225,12 +229,16 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
         for child in child_nodes:  # child = iterable element in child_nodes = of the format ([x,y,angle],cost)
             child[0][2] = reset_angle_in_range(child[0][2])
             approx_x, approx_y, approx_theta = approximation(child[0][0], child[0][1], child[0][2])
+
+            # duplicate node removal
             if approximation(child[0][0], child[0][1], child[0][2]) not in visited_set:
                 child_position = child[0]  # child[0] = [x,y, theta]
                 child_position_x = child[0][0]  # child[0][0] = x
                 child_position_y = child[0][1]  # child[0][1] = y
                 child_position_theta = child[0][2]  # child[0][2] = theta
                 print(approx_x, approx_y, approx_theta)
+
+                # to find the previous cost from the cost_update_matrix
                 prev_cost = cost_updates_matrix[approx_y, approx_x, approx_theta]  # row,column
                 # prev_cost = cost_updates_matrix[y, x]  # row,column
 
@@ -262,6 +270,7 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
         return visited_list, parent_child_map, last_node
         #return visited_set, parent_child_map, last_node
     else:
+        #if goal is not found then the visited list is returned as None, parent child, Last node map are also returned as None
         return None, None, None
 
 
@@ -468,6 +477,7 @@ def main():
 
     out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'XVID'), 1, (565, 379))
 
+    #visited_list is none only when the goal is not found
     if visited_list is not None:
 
         # for loop is for visited_list aka explored nodes
@@ -479,12 +489,14 @@ def main():
                 ax.quiver(parent_pos[0], parent_pos[1], child_pos[0]-parent_pos[0], child_pos[1]-parent_pos[1], units='xy', scale=1)
 
                 if ind%3000==0:
+                    # "." denotes the current directory
+                    # ".." denotes the previous directory
                     plt_name = './plots/plot' + str(ind) + '.png'
 
                     #savefig is a function of matplotlib
                     plt.savefig(plt_name, bbox_inches='tight')
 
-                    #read the image stored
+                    #read the image stored using cv2
                     plot_img = cv2.imread(plt_name)
 
                     #plot_img.shape = gives dimension of the frame
@@ -503,6 +515,8 @@ def main():
 
         trace_path = []
 
+        # last_node = child of some node
+        # now we need to track back to the starting position and print the final path
         child_pos = last_node.position
         child_pos_tuple = (child_pos[0], child_pos[1], last_node.angle)
 
@@ -511,10 +525,16 @@ def main():
 
         # to trackback and plot the vectors
         while parent is not None:
+            # parent is None only at the first node
+            #ax.quiver to plot the vector
             ax.quiver(parent[0], parent[1], child_pos_tuple[0] - parent[0], child_pos_tuple[1] - parent[1], units='xy', scale=1, color='g')
 
             #trace_path.append(parent)
+            # Every parent has a child, kyunki saas bhi kabhi bahu thi... - Guruji
+            # the current parent is made a child
             child_pos_tuple = parent
+
+            # find the parent of the parent using the parent_child_map
             parent = parent_child_map[parent]
 
 
