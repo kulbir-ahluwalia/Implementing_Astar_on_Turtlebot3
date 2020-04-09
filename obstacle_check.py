@@ -283,13 +283,13 @@ def boundary_obstacle(clearance, radius_rigid_robot, test_point_coord):
     x = test_point_coord[0]
     y = test_point_coord[1]
 
-    if 0 <= x < augment_distance:
+    if -5.1 <= x < augment_distance:
         return True
-    elif (299 - augment_distance) < x <= 299:
+    elif (5.1 - augment_distance) < x <= 5.1:
         return True
-    elif 0 <= y < augment_distance:
+    elif -5.1 <= y < augment_distance:
         return True
-    elif (199 - augment_distance) < y <= 199:
+    elif (5.1 - augment_distance) < y <= 5.1:
         return True
     else:
         return False

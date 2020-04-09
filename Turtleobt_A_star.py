@@ -274,13 +274,14 @@ def find_path_astar(image, start_node_pos, goal_node_pos, clearance, radius_rigi
 
 
 def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_node_y):
-    if test_point_obstacle_check(clearance, radius_rigid_robot, [start_node_x, start_node_y], None):
-        print("Start node is inside an obstacle. Enter some other coordinates. Restart program!")
-        exit(0)
-
-    if test_point_obstacle_check(clearance, radius_rigid_robot, [goal_node_x, goal_node_y], None):
-        print("Goal node is inside an obstacle. Enter some other coordinates. Restart program!")
-        exit(0)
+    pass
+    # if test_point_obstacle_check(clearance, radius_rigid_robot, [start_node_x, start_node_y], None):
+    #     print("Start node is inside an obstacle. Enter some other coordinates. Restart program!")
+    #     exit(0)
+    #
+    # if test_point_obstacle_check(clearance, radius_rigid_robot, [goal_node_x, goal_node_y], None):
+    #     print("Goal node is inside an obstacle. Enter some other coordinates. Restart program!")
+    #     exit(0)
 
 
 # radius_rigid_robot = int(input("Enter the radius of the rigid robot \n"))
@@ -300,11 +301,11 @@ def check_inputs_wrt_obstacles(start_node_x, start_node_y, goal_node_x, goal_nod
 # goal_node_y = int(input("Enter the goal y coordinate for the rigid robot\n"))
 
 # for testing
-start_node_x = 5
-start_node_y = 5
+start_node_x = 1.5
+start_node_y = 1.5
 
-goal_node_x = 50
-goal_node_y = 50
+goal_node_x = 4.5
+goal_node_y = 4.5
 
 step_size_robot = 1
 initial_angle = 60
@@ -313,11 +314,11 @@ clearance = 1
 radius_rigid_robot = 1
 augment_distance = radius_rigid_robot + clearance
 
-if (start_node_x < 0 and start_node_x > 300) and (goal_node_x < 0 and goal_node_x > 300):
+if (start_node_x < -5.1 and start_node_x > 5.1) and (goal_node_x < -5.1 and goal_node_x > 5.1):
     print("X coordinate is out of range. Enter x from [0,300]. Restart program!")
     exit(0)
 
-if (start_node_y < 0 and start_node_y > 200) and (goal_node_y < 0 and goal_node_y > 200):
+if (start_node_y < -5.1 and start_node_y > 5.1) and (goal_node_y < -5.1 and goal_node_y > 5.1):
     print("Y coordinate is out of range. Enter y from [0,200]. Restart program!")
     exit(0)
 
@@ -392,84 +393,78 @@ def main():
                                                         radius_rigid_robot, step_size_robot, initial_angle)
 
 
-    # plot the path:
-    fig, ax = plt.subplots()
+    # # plot the path:
+    # fig, ax = plt.subplots()
     # plt.grid()
     # #
-    ax.set_aspect('equal')
+    #ax.set_aspect('equal')
 
-    circle = plt.Circle((225,150), radius=25+augment_distance)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    # ax.spines['top'].set_visible(False)
+    # ax.spines['right'].set_visible(False)
+
+    ax.set_xlabel('sample')
+    ax.set_ylabel('z-score')
+
+    plt.axhline(0, color='black')
+    plt.ylim(-300, 300)
+    #plt.scatter('x_', 'y_', data=df, marker='o')
+    # plt.style.use('seaborn-dark')
+    plt.show()
+
+
+    circle = plt.Circle((2,3), radius= 1+augment_distance)
     ax.add_patch(circle)
 
-    circle = plt.Circle((225, -50), radius=25 + augment_distance)
+    circle = plt.Circle((0,0), radius= 1 + augment_distance)
     ax.add_patch(circle)
 
-    points = [[225, 40+(augment_distance/0.8575)], [250+(augment_distance/0.5145), 25], [225, 10-(augment_distance/0.8575)], [200-(augment_distance/0.5145), 25]]
+    circle = plt.Circle((2, -3), radius= 1 + augment_distance)
+    ax.add_patch(circle)
+
+    circle = plt.Circle((-2, -3), radius= 1 + augment_distance)
+    ax.add_patch(circle)
+
+    points = [[-1.25,3.75], [-1.25,2.25], [-2.75,2.25], [-2.75,3.75]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
 
-    rectangle_points = rectangle_points_find(clearance, radius_rigid_robot, None, None)
-    #print([rectangle_points[0][x],rectangle_points[0][y]])
-
-    points = [[rectangle_points[0][x],rectangle_points[0][y]], [rectangle_points[1][x],rectangle_points[1][y]], [rectangle_points[2][x],rectangle_points[2][y]],
-              [rectangle_points[3][x], rectangle_points[3][y]]]
+    points = [[-3.25, 0.75], [-4.75, 0.75], [-4.75, -0.75], [-3.25, -0.75]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
 
-    polygon_points = polygon_right_points(clearance, radius_rigid_robot, None, None)
-    # print([rectangle_points[0][x],rectangle_points[0][y]])
-
-    points = [[polygon_points[0][x], polygon_points[0][y]], [polygon_points[1][x], polygon_points[1][y]],
-              [polygon_points[2][x], polygon_points[2][y]],
-              [polygon_points[3][x], polygon_points[3][y]],
-              [polygon_points[4][x], polygon_points[4][y]]]
+    points = [[3.25, 0.75], [4.75, 0.75], [3.25, -0.75], [4.75, -0.75]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
-
-    polygon_points_left = polygon_left_points(clearance, radius_rigid_robot, None, None)
-    # print([rectangle_points[0][x],rectangle_points[0][y]])
-
-    points = [[polygon_points_left[0][x], polygon_points_left[0][y]], [polygon_points_left[1][x], polygon_points_left[1][y]],
-              [polygon_points_left[2][x], polygon_points_left[2][y]],
-              [polygon_points_left[3][x], polygon_points_left[3][y]]]
-    polygon = plt.Polygon(points)
-    ax.add_patch(polygon)
-
-    ellipse = Ellipse(xy=(150, 100), width=80+(2*augment_distance), height=40+(2*augment_distance))
-    ax.add_patch(ellipse)
 
     #add the left boundary
-    points = [[0,0], [0,200],
-              [augment_distance,200], [augment_distance,0]]
+    points = [[-5.1,-5.1], [-5.1,5.1],
+              [-5.1+augment_distance+0.1,-5.1], [-5.1+augment_distance+0.1,5.1]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
 
     # add the top boundary
-    points = [[300, 200], [0, 200],[0, 200-augment_distance],
-              [300 , 200- augment_distance]]
+    points = [[5.1, 5.1], [-5.1, 5.1],[-5.1, 5.1-augment_distance-0.1],
+              [5.1 , 5.1- augment_distance-0.1]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
 
     # add the lower boundary
-    points = [[300, 0], [0, 0], [0, augment_distance-1],
-              [300, augment_distance-1]]
+    points = [[5.1, -5.1], [-5.1, -5.1], [-5.1, -5.1 + augment_distance +0.1],
+              [5.1, -5.1 + augment_distance + 1]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
 
     # add the right boundary
-    points = [[300, 200], [300, 0], [300 - augment_distance, 0],
-              [300-augment_distance, 200]]
+    points = [[5.1, 5.1], [5.1, -5.1], [5.1 - augment_distance -0.1, -5.1],
+              [5.1-augment_distance -0.1, 5.1]]
     polygon = plt.Polygon(points)
     ax.add_patch(polygon)
 
-
-
-
-
-
-
-    plt.xlim(0, 300)
-    plt.ylim(0, 200)
+    plt.xlim(-5.5, 5.5)
+    plt.ylim(-5.5, 5.5)
 
     out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'XVID'), 1, (565, 379))
 
